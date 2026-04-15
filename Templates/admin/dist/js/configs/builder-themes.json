@@ -1,0 +1,54 @@
+{
+  "themes": [
+    {
+      "id": "theme_abstract_blue",
+      "name": "Abstract Blue",
+      "url": "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1200",
+      "description": "Rece, curat, corporate",
+      "tokens": {
+        "accent": "#2E85C7",
+        "accentStrong": "#0A5084",
+        "titleSurface": "rgba(255,255,255,0.96)",
+        "titleColor": "#0A5084",
+        "surface": "rgba(255,255,255,0.94)",
+        "mediaBorderColor": "#ff9f43",
+        "mediaBorderWidth": 4,
+        "cardOverlay": "linear-gradient(180deg, rgba(7,25,43,0.18), rgba(7,25,43,0.38))"
+      }
+    },
+    {
+      "id": "theme_sunset_burst",
+      "name": "Sunset Burst",
+      "url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200",
+      "description": "Cald, energic, dramatic",
+      "tokens": {
+        "accent": "#ff7a18",
+        "accentStrong": "#ab2f12",
+        "titleSurface": "rgba(39,16,10,0.72)",
+        "titleColor": "#fff7ef",
+        "surface": "rgba(255,245,238,0.96)",
+        "mediaBorderColor": "#ffd166",
+        "mediaBorderWidth": 5,
+        "answerRadius": 18,
+        "cardOverlay": "linear-gradient(180deg, rgba(79,20,10,0.20), rgba(79,20,10,0.48))"
+      }
+    },
+    {
+      "id": "theme_night_glass",
+      "name": "Night Glass",
+      "url": "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200",
+      "description": "Dark, high-tech, premium",
+      "tokens": {
+        "accent": "#5eead4",
+        "accentStrong": "#d1fae5",
+        "titleSurface": "rgba(15,23,42,0.72)",
+        "titleColor": "#e2e8f0",
+        "surface": "rgba(255,255,255,0.92)",
+        "mediaBorderColor": "#5eead4",
+        "mediaBorderWidth": 3,
+        "answerRadius": 24,
+        "cardOverlay": "linear-gradient(180deg, rgba(2,6,23,0.24), rgba(2,6,23,0.55))"
+      }
+    }
+  ]
+}

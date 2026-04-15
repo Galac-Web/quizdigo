@@ -1,0 +1,54 @@
+{
+  "common": {
+    "defaultLanguage": "ro",
+    "blockColors": ["purple", "orange", "green", "yellow", "blue", "red"],
+    "limits": {
+      "questionTextMaxLength": 130,
+      "answerTextMaxLength": 80,
+      "puzzleMinBlocks": 2,
+      "puzzleMaxBlocks": 5
+    },
+    "defaults": {
+      "theme": {
+        "themeId": "theme_abstract_blue",
+        "backgroundUrl": "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1200"
+      },
+      "audio": {
+        "masterEnabled": true,
+        "musicEnabled": false,
+        "musicUrl": "",
+        "gongEnabled": false,
+        "gongStartUrl": "",
+        "gongEndUrl": "",
+        "answerSoundsEnabled": true,
+        "correctSoundUrl": "",
+        "wrongSoundUrl": ""
+      },
+      "timer": {
+        "enabled": true,
+        "selected": "20s"
+      },
+      "scoring": {
+        "basePoints": 1000,
+        "speedBonus": {
+          "enabled": true,
+          "percent": 50,
+          "withinSeconds": 10
+        },
+        "wrongAnswerPenalty": {
+          "enabled": false,
+          "mode": "equal_to_correct"
+        }
+      },
+      "imageReveal": {
+        "enabled": false,
+        "mode": "original"
+      }
+    },
+    "i18n": {
+      "ro": {
+        "confirmAnswer": "Confirma raspunsul"
+      }
+    }
+  }
+}

@@ -1,0 +1,630 @@
+:root{
+    --blue:#2E85C7;
+    --blue2:#0A5084;
+    --green:#2ecc71;
+    --orange:#ff7f50;
+    --bg:#f6f8fb;
+    --card:#fff;
+    --line:#e6edf5;
+    --shadow: 0 10px 25px rgba(0,0,0,.08);
+    --r16:16px;
+}
+
+*{ box-sizing:border-box; }
+body{ margin:0; font-family:system-ui, -apple-system, Segoe UI, Roboto, Arial; background:var(--bg); color:#111; }
+
+.topbar{
+    height:60px; background:#fff; border-bottom:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between; padding:0 16px;
+}
+.brand{ font-weight:900; color:var(--blue2); }
+.topbar-right{ display:flex; gap:10px; flex-wrap:wrap; }
+
+.btn{
+    border:none; cursor:pointer; padding:10px 14px; border-radius:10px;
+    font-weight:800; color:#fff;
+}
+.btn-blue{ background:var(--blue); }
+.btn-green{ background:var(--green); }
+.btn-orange{ background:var(--orange); }
+.btn-gray{ background:#5f6368; }
+.btn:disabled{ opacity:.65; cursor:not-allowed; }
+
+.workspace{
+    display:flex; gap:12px; padding:12px; height:calc(100vh - 60px);
+}
+
+.slides{
+    width:150px; background:#fff; border:1px solid var(--line); border-radius:14px;
+    padding:10px; display:flex; flex-direction:column; gap:10px; overflow:hidden;
+}
+.add-slide{
+    height:56px; border:2px dashed #cdd8e6; background:#fff; border-radius:12px;
+    font-size:28px; cursor:pointer; color:#97a6ba;
+}
+.slides-list{ overflow:auto; display:flex; flex-direction:column; gap:10px; padding-right:4px; }
+.slide{
+    position:relative; height:76px; border-radius:12px; overflow:hidden; cursor:pointer;
+    border:2px solid transparent; box-shadow: 0 3px 10px rgba(0,0,0,.06);
+    background:#eef2f7;
+}
+.slide.active{ border-color:var(--blue); }
+.slide .bg{ position:absolute; inset:0; background-size:cover; background-position:center; filter:saturate(1.05); }
+.slide .num{
+    position:absolute; bottom:6px; left:8px; color:#fff; font-weight:900; text-shadow:0 2px 8px rgba(0,0,0,.35);
+}
+.slide .del{
+    position:absolute; top:6px; right:6px; width:22px; height:22px; border:none; border-radius:50%;
+    background:#ff4444; color:#fff; cursor:pointer; font-weight:900;
+}
+
+.canvas{ flex:1; min-width:0; }
+.card{
+    height:100%;
+    border-radius:20px; overflow:hidden; box-shadow:var(--shadow);
+    background-size:cover; background-position:center; background-color:#000;
+    padding:18px; display:flex; flex-direction:column; align-items:center; gap:14px;
+}
+
+.title-box{
+    width:min(820px, 95%); background:#fff; border-radius:12px; padding:10px 14px;
+    box-shadow: 0 8px 18px rgba(0,0,0,.10);
+}
+.input-title{
+    width:100%; border:none; outline:none; text-align:center;
+    font-weight:900; font-size:20px; color:var(--blue2);
+}
+
+.media-center{
+    width:min(720px, 90%); aspect-ratio:16/9;
+    border-radius:16px; border:4px solid #ff9f43;
+    background:#000; display:flex; align-items:center; justify-content:center;
+    cursor:pointer; overflow:hidden; transition:.15s transform;
+}
+.media-center:hover{ transform:scale(1.01); }
+.media-center-inner{ text-align:center; color:#fff; opacity:.92; padding:12px; }
+.media-icon{ font-size:42px; font-weight:900; }
+.media-hint{ font-size:12px; opacity:.9; }
+
+.answers{
+    width:min(900px, 95%);
+    display:grid; gap:12px;
+}
+.a2{ grid-template-columns:1fr 1fr; }
+.a1{ grid-template-columns:1fr; }
+
+.answer{
+    height:86px; border-radius:14px; padding:0 14px;
+    display:flex; align-items:center; justify-content:space-between;
+    box-shadow: 0 6px 0 rgba(0,0,0,.10);
+    color:#fff; position:relative;
+}
+.answer.purple{ background:#9b59b6; }
+.answer.orange{ background:#ff7f50; }
+.answer.green{ background:#2ecc71; }
+.answer.yellow{ background:#f1c40f; color:#111; }
+.answer.correct{ box-shadow: inset 0 0 0 4px #2ecc71, 0 6px 0 rgba(0,0,0,.10); }
+
+.answer-left{ display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
+
+/* preview selection inputs */
+.prev-sel{
+    width:18px;
+    height:18px;
+    accent-color:#0A5084;
+}
+
+/* switch disabled hint */
+.switch.is-disabled{ opacity:.55; pointer-events:none; }
+.answer-input{
+    width:100%; min-width:0;
+    border:none; outline:none; background:transparent;
+    font-weight:900; color:inherit; font-size:16px;
+}
+.answer-input::placeholder{ color:rgba(255,255,255,.75); }
+.answer.yellow .answer-input::placeholder{ color:rgba(0,0,0,.6); }
+
+.imgbox{
+    height:44px; width:66px; border-radius:8px; overflow:hidden; border:2px solid rgba(255,255,255,.85);
+    position:relative; flex-shrink:0;
+}
+.imgbox img{ width:100%; height:100%; object-fit:cover; }
+.imgbox button{
+    position:absolute; top:0; right:0; border:none; background:#ff4444; color:#fff; font-weight:900;
+    width:18px; height:18px; cursor:pointer;
+}
+
+.iconbtn{
+    border:none; background:rgba(255,255,255,.18); color:#fff;
+    width:34px; height:34px; border-radius:10px; cursor:pointer; flex-shrink:0;
+}
+.correctbtn{
+    width:30px; height:30px; border-radius:50%;
+    border:3px solid rgba(255,255,255,.85);
+    cursor:pointer; flex-shrink:0;
+}
+.answer.correct .correctbtn{
+    background:#2ecc71;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z'/%3E%3C/svg%3E");
+    background-size:70%; background-repeat:no-repeat; background-position:center;
+}
+
+.settings{
+    width:260px; background:transparent; display:flex; flex-direction:column; gap:12px;
+}
+.settings-card{
+    background:#fff; border:1px solid var(--line); border-radius:14px; padding:12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,.05);
+}
+.settings-title{ font-weight:900; color:var(--blue2); text-transform:uppercase; font-size:13px; margin-bottom:10px; }
+.settings-preview{ display:flex; flex-direction:column; align-items:center; gap:8px; }
+.theme-preview{ width:62px; height:42px; border-radius:8px; background:#1f2937; }
+.settings-sub{ font-weight:800; font-size:12px; opacity:.8; }
+
+.select-like{
+    width:100%; display:flex; align-items:center; justify-content:center; gap:10px;
+    border:1px solid #cbd5e0; background:#fff; cursor:pointer;
+    border-radius:14px; padding:14px;
+}
+.select-like img{ width:52px; height:52px; object-fit:contain; }
+.divider{ height:1px; background:var(--line); margin:12px 0; }
+
+.time-grid{ display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.time-item{
+    display:flex; align-items:center; gap:8px; cursor:pointer;
+    font-weight:800; font-size:13px; color:#475569;
+    user-select:none;
+}
+.time-item input{ accent-color: var(--blue); }
+
+.bonus-row{ display:flex; align-items:center; gap:10px; }
+.badge{
+    font-weight:900; font-size:12px; padding:6px 10px; border-radius:999px; background:#e8f1fb; color:var(--blue);
+}
+.badge.gray{ background:#f1f5f9; color:#64748b; }
+
+.switch{ position:relative; width:44px; height:22px; display:inline-block; }
+.switch input{ opacity:0; width:0; height:0; }
+.switch-ui{
+    position:absolute; inset:0; background:#cbd5e0; border-radius:999px; transition:.2s;
+}
+.switch-ui::before{
+    content:""; position:absolute; top:3px; left:3px; width:16px; height:16px;
+    background:#fff; border-radius:50%; transition:.2s;
+}
+.switch input:checked + .switch-ui{ background:var(--blue); }
+.switch input:checked + .switch-ui::before{ transform:translateX(22px); }
+
+.range{ width:100%; margin-top:10px; }
+.hint{ font-size:12px; color:#64748b; margin-top:8px; }
+
+#answers-meta-info{
+    display:grid;
+    gap:10px;
+}
+#answers-meta-info .hint{
+    margin-top:0;
+}
+#answers-meta-info .btn-row{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+    margin-top:10px;
+}
+
+.modal{
+    position:fixed; inset:0; background:rgba(0,0,0,.55);
+    display:none; align-items:center; justify-content:center;
+    z-index:9999; padding:14px; overflow:auto;
+}
+.modal[aria-hidden="false"]{ display:flex; }
+.modal-box{
+    width:min(520px, 96vw); background:#fff; border-radius:18px; overflow:hidden;
+    box-shadow: 0 25px 60px rgba(0,0,0,.25);
+    max-height:90vh;
+    display:flex;
+    flex-direction:column;
+}
+.modal-box.wide{ width:min(900px, 96vw); }
+.modal-head{
+    padding:14px 16px; border-bottom:1px solid var(--line);
+    display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.modal-title{ font-weight:950; color:var(--blue2); }
+.modal-body{ padding:14px 16px; overflow:auto; max-height:calc(90vh - 120px); }
+.modal-foot{ padding:12px 16px; border-top:1px solid var(--line); }
+.x{ border:none; background:transparent; cursor:pointer; font-size:18px; }
+
+.grid2{ display:grid; grid-template-columns:1.4fr 1fr; gap:14px; }
+.grid2.smallgap{ gap:10px; }
+.label{ display:block; font-weight:900; font-size:12px; color:#475569; margin:8px 0 6px; text-transform:uppercase; }
+.input{ width:100%; padding:12px 12px; border:2px solid #e2e8f0; border-radius:12px; outline:none; }
+.input:focus{ border-color:var(--blue); box-shadow: 0 0 0 4px rgba(46,133,199,.12); }
+.cover{
+    aspect-ratio:16/10; border:3px dashed #cbd5e0; border-radius:16px;
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    background:#f8fafc; min-height:220px;
+}
+.cover-hint{ font-weight:900; color:#64748b; text-align:center; padding:10px; }
+
+.preview-stage{
+    width:min(1100px, 96vw); height:min(92vh, 900px);
+    border-radius:18px; overflow:hidden;
+    background:linear-gradient(135deg, #2E85C7 0%, #46178f 100%);
+    position:relative; padding:16px;
+}
+.preview-top{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.counter{ color:#fff; font-weight:950; font-size:18px; }
+
+.timer{
+    position:absolute; left:18px; top:41%; width:100px; height:100px;
+}
+.timer-text{
+    position:absolute; inset:0; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; color:#fff; font-weight:950;
+}
+.timer-text #timer-num{ font-size:28px; }
+
+.preview-card{
+    margin-top:26px; background:#fff; border-radius:14px; padding:14px;
+    box-shadow: 0 12px 25px rgba(0,0,0,.18);
+}
+.preview-title{ font-size:26px; font-weight:950; color:#111; text-align:center; }
+
+.preview-media{
+    width:520px; height:300px; border-radius:16px; margin:18px auto 12px;
+    background-size:cover; background-position:center; display:none;
+    box-shadow: 0 10px 22px rgba(0,0,0,.22);
+}
+#preview-stage,
+.preview-stage,
+.preview {
+    position: relative; /* important */
+    min-height: 100vh;  /* sau height: 100vh dacă e full-screen */
+}
+
+/* answers mereu jos cu 20px */
+.preview-answers{
+    width: min(900px, 94%);
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 20px;
+}
+
+/* opțional: să nu se lipească de margini pe ecrane mici */
+@media (max-width: 520px){
+    .preview-answers{ width: calc(100% - 24px); }
+}
+@media (max-width: 1000px){
+    .workspace{ flex-direction:column; height:auto; }
+    .slides{ width:100%; }
+    .slides-list{ flex-direction:row; overflow:auto; }
+    .slide{ min-width:130px; }
+    .settings{ width:100%; }
+}
+@media (max-width: 520px){
+    .preview-answers{ grid-template-columns:1fr; }
+    .grid2{ grid-template-columns:1fr; }
+}
+
+/* =========================================================
+   ADĂUGIRI (NU ȘTERG NIMIC) — NEXT LEVEL LAYOUT + ANIMAȚII
+   ========================================================= */
+
+/* 1) Preview answers: “de jos în sus” + fade-in controlat */
+.preview-answers{
+    transform: translateX(-50%) translateY(18px);
+    opacity: 0;
+    transition: transform .22s ease, opacity .22s ease;
+    pointer-events: none;
+}
+.preview-answers.is-in{
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* 2) Builder: layout per tip (clase pe .card) */
+.card{ position: relative; }
+
+/* default (quiz) — answers jos ca Kahoot */
+.card.layout-quiz .answers{
+    position:absolute;
+    left:50%;
+    bottom:20px;
+    transform:translateX(-50%);
+    width:min(980px, 96%);
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+}
+
+/* TRUE/FALSE: două butoane mari jos */
+.card.layout-true-false .answers{
+    position:absolute;
+    left:50%;
+    bottom:20px;
+    transform:translateX(-50%);
+    width:min(980px, 96%);
+    grid-template-columns:1fr 1fr;
+    gap:18px;
+}
+.card.layout-true-false .answer{
+    height:150px;
+    padding:22px 26px;
+    border-radius:14px;
+}
+.card.layout-true-false .answer-left{
+    font-size:28px;
+    font-weight:950;
+}
+
+/* OPEN-ENDED: un input jos (o singură coloană) */
+.card.layout-open-ended .answers{
+    position:absolute;
+    left:50%;
+    bottom:22px;
+    transform:translateX(-50%);
+    width:min(900px, 94%);
+    grid-template-columns:1fr;
+}
+.card.layout-open-ended .answer{
+    height:auto;
+    padding:18px 16px;
+}
+
+/* JUMBLE: media stânga + listă dreapta */
+.card.layout-jumble .media-center{
+    position:absolute;
+    left:22px;
+    top:110px;
+    width:min(420px, 36%);
+    height:420px;
+    aspect-ratio:auto; /* să poți forța pătrat */
+}
+.card.layout-jumble .answers{
+    position:absolute;
+    right:22px;
+    top:110px;
+    width:min(760px, 56%);
+    grid-template-columns:1fr;
+    gap:14px;
+}
+
+/* SLIDER: bară jos full width */
+.card.layout-slider .answers{
+    position:absolute;
+    left:50%;
+    bottom:20px;
+    transform:translateX(-50%);
+    width:min(1040px, 96%);
+    display:flex;
+    align-items:center;
+    gap:14px;
+    padding:18px 16px;
+    border-radius:14px;
+    background:rgba(255,255,255,.92);
+    box-shadow: 0 10px 22px rgba(0,0,0,.20);
+}
+.card.layout-slider .answers .slider-min,
+.card.layout-slider .answers .slider-max{
+    width:70px;
+    text-align:center;
+    font-weight:900;
+    color:#111;
+}
+.card.layout-slider .answers input[type="range"]{
+    width:100%;
+}
+
+/* PIN: answers ascunse, click pe media-center */
+.card.layout-pin .answers{ display:none; }
+.card.layout-pin .media-center{
+    width:min(820px, 90%);
+    height:420px;
+    aspect-ratio:auto;
+    position:relative;
+}
+
+/* PIN DOT */
+.card.layout-pin .pin-dot{
+    position:absolute;
+    width:36px;
+    height:36px;
+    margin-left:-18px;
+    margin-top:-18px;
+    border-radius:50%;
+    background:rgba(255,255,255,.95);
+    border:3px solid rgba(0,0,0,.25);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:950;
+    cursor:pointer;
+    box-shadow: 0 10px 18px rgba(0,0,0,.18);
+}
+.card.layout-pin .pin-dot:hover{
+    transform: scale(1.06);
+}
+
+/* ==============================
+   PREVIEW LAYOUTS (Kahoot-like)
+   ADAUGĂ la finalul CSS-ului tău
+================================ */
+
+/* stage trebuie să fie anchor pentru absolute */
+.preview-stage{
+    position:relative; /* dacă există deja, nu strică */
+}
+
+/* answers default jos cu 20px (ai deja, păstrăm) */
+.preview-answers{
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
+    bottom:20px;
+    width:min(900px, 94%);
+}
+
+/* -------- QUIZ (4 răspunsuri în grilă jos) -------- */
+.preview-answers.is-quiz{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+}
+
+/* -------- TRUE/FALSE (2 butoane mari, lipite) -------- */
+.preview-answers.is-truefalse{
+    width:min(980px, 96%);
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:14px;
+}
+.preview-answers.is-truefalse .answer{
+    height:120px;
+    border-radius:16px;
+    box-shadow:0 10px 0 rgba(0,0,0,.16);
+}
+.preview-answers.is-truefalse .answer-left > div{
+    font-size:22px !important;
+    font-weight:950 !important;
+}
+
+/* -------- PUZZLE/JUMBLE (listă verticală în dreapta, ca în imagine) -------- */
+/* În preview îl punem jos tot, dar stil “listă” (ușor de recunoscut) */
+.preview-answers.is-jumble{
+    width:min(980px, 96%);
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+}
+.preview-answers.is-jumble .answer{
+    height:72px;
+    border-radius:14px;
+}
+
+/* -------- TYPE ANSWER (input mare jos, centrat) -------- */
+.preview-answers.is-open-ended{
+    width:min(720px, 92%);
+    display:flex;
+    gap:12px;
+    align-items:center;
+    justify-content:center;
+}
+.preview-answers.is-open-ended .answer{
+    width:100%;
+    height:72px;
+    background:#fff;
+    color:#111;
+    border-radius:14px;
+    box-shadow:0 12px 25px rgba(0,0,0,.18);
+}
+.preview-answers.is-open-ended .answer .answer-input{
+    background:transparent;
+    color:#111;
+    font-size:18px;
+}
+.preview-answers.is-open-ended .correctbtn{ display:none; }
+
+/* -------- SLIDER (bară jos full) -------- */
+.preview-answers.is-slider{
+    width:min(980px, 96%);
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+.preview-answers.is-slider .slider-wrap{
+    background:#fff;
+    border-radius:14px;
+    padding:14px;
+    box-shadow:0 12px 25px rgba(0,0,0,.18);
+}
+.preview-answers.is-slider .slider-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:14px;
+    font-weight:900;
+}
+.preview-answers.is-slider input[type="range"]{
+    width:100%;
+}
+
+/* -------- PIN ANSWER (card mic informativ jos) -------- */
+.preview-answers.is-pin{
+    width:min(780px, 92%);
+    display:flex;
+    justify-content:center;
+}
+.preview-answers.is-pin .pin-card{
+    width:100%;
+    background:#fff;
+    border-radius:14px;
+    padding:14px 16px;
+    box-shadow:0 12px 25px rgba(0,0,0,.18);
+    display:flex;
+    gap:14px;
+    align-items:center;
+}
+.preview-answers.is-pin .pin-bullets{
+    width:80px;
+    height:48px;
+    border-radius:12px;
+    background:linear-gradient(135deg,#e8f1fb,#f1f5f9);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:950;
+    color:#0A5084;
+}
+
+/* mobile */
+@media (max-width:520px){
+    .preview-answers.is-quiz{ grid-template-columns:1fr; }
+    .preview-answers.is-truefalse{ grid-template-columns:1fr; }
+}
+
+/* IMPORTANT: ca absolute să fie relativ la card */
+.card{ position: relative; }
+
+/* JUMBLE layout – media în stânga, fără ieșire din card */
+.card.layout-jumble{
+    padding-left: 18px; /* păstrezi padding normal */
+}
+
+/* media-center: fix poziție + dimensiuni responsive */
+.card.layout-jumble .media-center{
+    position: absolute;
+    left: 18px;                 /* NU negativ */
+    top: 92px;                  /* sub title-box (ajustează dacă vrei) */
+    width: clamp(260px, 34%, 420px);
+    height: clamp(220px, 34vw, 420px);
+    aspect-ratio: auto;
+    margin: 0;
+}
+
+/* împinge zona de answers spre dreapta ca să nu se suprapună cu media */
+.card.layout-jumble .answers{
+    width: min(900px, 95%);
+    margin-left: calc(clamp(260px, 34%, 420px) + 32px);
+}
+
+/* pe ecrane mici: revine normal (media sus, answers jos) */
+@media (max-width: 900px){
+    .card.layout-jumble .media-center{
+        position: relative;
+        left: auto;
+        top: auto;
+        width: min(720px, 90%);
+        height: auto;
+        aspect-ratio: 16/9;
+    }
+    .card.layout-jumble .answers{
+        margin-left: 0;
+    }
+}

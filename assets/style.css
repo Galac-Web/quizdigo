@@ -1,0 +1,250 @@
+:root{
+    --qd-primary:#2563eb;
+    --qd-secondary:#f97316;
+    --qd-dark:#0f172a;
+    --qd-muted:#64748b;
+    --qd-soft:#f8fafc;
+    --qd-radius:24px;
+}
+
+*{ box-sizing: border-box; }
+html, body{ width:100%; overflow-x:hidden; }
+body{
+    font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+    color: var(--qd-dark);
+}
+
+/* Navbar */
+.navbar{
+    border-bottom: 1px solid #eef2f7;
+    background:#fff;
+}
+
+/* Buttons */
+.btn-pill{
+    border-radius: 999px;
+    font-weight: 800;
+    letter-spacing:.3px;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 10px 18px;
+}
+.btn-primary.qd{ background: var(--qd-primary); border-color: var(--qd-primary); }
+.btn-secondary.qd{ background: var(--qd-secondary); border-color: var(--qd-secondary); }
+
+/* HERO */
+.hero{
+    padding: 88px 0 48px;
+    background: url('img/Rectangle.png') center/cover no-repeat;
+    color:#fff;
+}
+.hero h1{ font-weight: 900; letter-spacing: -0.02em; }
+.hero .lead{ color: rgba(255,255,255,.92); font-weight: 500; }
+
+/* Sections */
+.section{ padding: 72px 0; }
+.section-title{
+    font-weight: 900;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #1e3a8a;
+    margin-bottom: 36px;
+}
+
+/* Cards */
+.card-soft{
+    background: #F2F5FE;
+    border: 1px solid #0A5084;
+    border-radius: var(--qd-radius);
+}
+.card-round{
+    border-radius: calc(var(--qd-radius) + 10px);
+}
+
+/* Join */
+.join-box{
+    background: url('img/bglogare.png') center/cover no-repeat;
+    border-radius: 48px;
+    color:#fff;
+    overflow:hidden;
+}
+.code-input{
+    width: 100%;
+    letter-spacing: .55em;
+    text-align:center;
+    font-weight: 900;
+    font-size: 26px;
+    border-radius: 18px;
+    border: 0;
+    padding: 14px 16px;
+}
+
+/* Type cards */
+.type-card{
+    border-radius: 28px;
+    color:#fff;
+    min-height: 210px;
+    position: relative;
+    overflow:hidden;
+    border: 0;
+}
+.type-card img{
+
+    inset:auto 16px 16px auto;
+
+    opacity:.9;
+}
+.type-card .label{
+    position:absolute;
+    left:18px;
+    right:18px;
+    bottom:18px;
+    font-weight: 900;
+    line-height: 1.25;
+}
+
+/* Stats */
+.stat-card{
+    background: url('img/bg.png') center/cover no-repeat;
+    border-radius: 40px;
+    color:#fff;
+    display:flex;
+    align-items:center;
+    justify-content: space-around;
+    gap: 16px;
+    overflow:hidden;
+    padding: 48px !important;
+}
+.stat-card img{
+    max-width: 100%;
+    height: auto;
+    display:block;
+}
+.stat-number{
+    font-weight: 900;
+    font-size: clamp(36px, 4vw, 64px);
+    line-height: 1;
+}
+.stat-label{ opacity:.92; font-weight: 700; }
+
+/* Partners */
+.partners-box{
+    background: var(--qd-secondary);
+    border-radius: 52px;
+    color:#fff;
+    overflow:hidden;
+}
+.partner-logo{
+
+    border-radius: 18px;
+    padding: 14px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height: 74px;
+    overflow:hidden;
+}
+.partner-logo img{
+
+    max-width: 100%;
+    object-fit: contain;
+}
+
+/* News */
+.news-card{
+    border-radius: 28px;
+    border: 1px solid #eef2f7;
+}
+.news-icon{
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: #cffafe;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+.news-icon i{ color:#0891b2; }
+
+/* Footer */
+footer{
+    background: var(--qd-soft);
+    border-top: 1px solid #e5e7eb;
+}
+.footer-link{
+    color:#475569;
+    text-decoration:none;
+}
+.btn_prime{
+    background: #2E85C7 !important;
+    border: 1px solid #ffffff !important;
+    border-radius:10px;
+}
+.btn_prime_sec{
+    background: #FF5722;
+
+    border-radius:10px;
+}
+.footer-link:hover{ color: var(--qd-primary); }
+
+/* -------------------------
+   RESPONSIVE BREAKPOINTS
+-------------------------- */
+
+/* lg down */
+@media (max-width: 992px){
+    .section{ padding: 56px 0; }
+    .join-box{ border-radius: 36px; }
+}
+
+/* md down */
+@media (max-width: 768px){
+    .hero{ padding: 56px 0 28px; }
+    .section-title{ margin-bottom: 24px; }
+
+    /* Stats: pe mobil/tabla, pune coloană */
+    .stat-card{
+        flex-direction: column;
+        text-align: center;
+        justify-content: center;
+        padding: 18px !important;
+    }
+    .stat-card img{
+        height: 160px !important;
+        width: auto;
+    }
+}
+
+/* sm down */
+@media (max-width: 576px){
+    .hero{ padding: 44px 0 22px; }
+    .hero h1{ font-size: 34px; }
+    .hero .lead{ font-size: 16px; }
+
+    .section{ padding: 44px 0; }
+
+    /* Join input: micșorează spacing-ul și fontul */
+    .code-input{
+        font-size: 18px;
+        letter-spacing: .35em;
+        padding: 12px 12px;
+    }
+
+    /* Type cards: puțin mai mici */
+    .type-card{ min-height: 180px; }
+
+
+    /* Partners: colțuri mai mici pe mobil */
+    .partners-box{ border-radius: 36px; }
+    .btn_element{
+        width: 100% !important;
+    }
+    .btn_nexts{
+        width: 100% !important;
+    }
+}
+
+/* foarte mic */
+@media (max-width: 400px){
+    .btn-pill{ padding: 10px 14px; }
+}

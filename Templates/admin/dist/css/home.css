@@ -1,0 +1,101 @@
+.bgbox{
+    background: #12a356ad;
+    border-radius: 20px;
+}
+/* Container Profil */
+.profile {
+    position: relative; /* Esențial pentru poziționarea absolută a dropdown-ului */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 15px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    user-select: none;
+}
+
+.profile:hover {
+    background: #f8fafc;
+}
+
+.avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-size: cover;
+    background-position: center;
+    background-color: #e2e8f0;
+}
+
+.chev {
+    font-size: 12px;
+    color: #64748b;
+    transition: transform 0.3s ease;
+}
+
+/* Meniul Dropdown */
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 10px); /* Apare la 10px sub profil */
+    right: 0;
+    width: 200px;
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    border: 1px solid #e2e8f0;
+    display: none; /* Ascuns implicit */
+    flex-direction: column;
+    padding: 8px;
+    z-index: 9999;
+    animation: dropdownFade 0.2s ease-out;
+}
+
+.dropdown-menu.show {
+    display: flex; /* Afișat prin JS */
+}
+
+/* Elemente din Dropdown */
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 15px;
+    text-decoration: none;
+    color: #334155;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 10px;
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+    background: #f1f5f9;
+    color: #1e3a8a;
+}
+
+.dropdown-item img {
+    width: 18px;
+    height: 18px;
+    opacity: 0.7;
+}
+
+.dropdown-item.logout {
+    color: #ef4444;
+}
+
+.dropdown-item.logout:hover {
+    background: #fef2f2;
+}
+
+hr {
+    border: 0;
+    border-top: 1px solid #f1f5f9;
+    margin: 6px 0;
+}
+
+/* Animație */
+@keyframes dropdownFade {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

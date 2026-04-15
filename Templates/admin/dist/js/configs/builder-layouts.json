@@ -1,0 +1,278 @@
+{
+    "builder": {
+        "defaultLayoutBySlideType": {
+            "quiz": "custom_quiz_news_layout",
+            "media": "media_classic"
+        },
+        "titleVariants": {
+            "default": {
+                "titleAlign": "center",
+                "titleWidth": "min(820px, 95%)"
+            },
+            "editorial": {
+                "titleAlign": "left",
+                "titleWidth": "min(920px, 96%)"
+            },
+            "compact": {
+                "titleAlign": "center",
+                "titleWidth": "min(760px, 92%)"
+            },
+            "title_center_min_820px__95__": {
+                "titleAlign": "center",
+                "titleWidth": "min(820px, 95%)"
+            }
+        },
+        "mediaVariants": {
+            "top_large": {
+                "mediaVisible": true,
+                "mediaWidth": "min(720px, 90%)",
+                "mediaAspectRatio": "16/9"
+            },
+            "top_medium": {
+                "mediaVisible": true,
+                "mediaWidth": "min(620px, 82%)",
+                "mediaAspectRatio": "16/9"
+            },
+            "cinematic": {
+                "mediaVisible": true,
+                "mediaWidth": "min(860px, 94%)",
+                "mediaAspectRatio": "21/9"
+            },
+            "left_panel": {
+                "mediaVisible": true,
+                "mediaWidth": "100%",
+                "mediaAspectRatio": "4/3",
+                "splitMode": true
+            },
+            "hidden": {
+                "mediaVisible": false
+            },
+            "media_top_large": {
+                "mediaVisible": true,
+                "mediaWidth": "min(720px, 90%)",
+                "mediaAspectRatio": "16/9",
+                "splitMode": false
+            },
+            "media_": {
+                "mediaVisible": true,
+                "mediaWidth": "min(720px, 90%)",
+                "mediaAspectRatio": "16/9",
+                "splitMode": false
+            }
+        },
+        "answersVariants": {
+            "grid_2_columns": {
+                "answerColumns": 2,
+                "answerGap": 18,
+                "answerMinHeight": 84,
+                "answerRadius": 22,
+                "answerFontSize": 18,
+                "answerImageWidth": 140,
+                "answersWidth": "min(900px, 95%)"
+            },
+            "vertical_stack": {
+                "answerColumns": 1,
+                "answerGap": 14,
+                "answerMinHeight": 74,
+                "answerRadius": 18,
+                "answerFontSize": 17,
+                "answerImageWidth": 110,
+                "answersWidth": "min(820px, 92%)"
+            },
+            "grid_1_column_large": {
+                "answerColumns": 1,
+                "answerGap": 16,
+                "answerMinHeight": 88,
+                "answerRadius": 16,
+                "answerFontSize": 18,
+                "answerImageWidth": 150,
+                "answersWidth": "min(960px, 95%)"
+            },
+            "media_text_card": {
+                "answerColumns": 1,
+                "answersWidth": "min(900px,95%)",
+                "mediaTextWidth": "min(900px,95%)"
+            }
+        },
+        "layoutRegistry": [
+            {
+                "id": "quiz_classic_image_top",
+                "label": {
+                    "en": "Quiz classic image top",
+                    "ro": "Quiz clasic cu imagine sus",
+                    "ru": "Klassicheskaia viktorina s izobrazheniem sverkhu",
+                    "fr": "Quiz classique image en haut",
+                    "de": "Klassisches Quiz mit Bild oben",
+                    "it": "Quiz classico con immagine sopra",
+                    "es": "Quiz clasico con imagen arriba",
+                    "pt": "Quiz classico com imagem no topo",
+                    "uk": "Klasychnyi kviz iz zobrazhenniam zverkhu",
+                    "pl": "Klasyczny quiz z obrazem u gory",
+                    "cs": "Klasicky kviz s obrazkem nahore",
+                    "hu": "Klasszikus kviz keppel felul",
+                    "bg": "Klasicheski kuiz s izobrazhenie gore",
+                    "el": "Klasiko kouiz me eikona epano",
+                    "tr": "Ustte gorselli klasik quiz",
+                    "ar": "ikhtibar klasikii mae sura fi alaelaa",
+                    "he": "hidon klasi im tmuna lemala",
+                    "zh": "dingbu tupian jingdian wenda",
+                    "ja": "joubu gazou no kurashikku kuizu",
+                    "ko": "sangdan imiji keullaesik kwijeu"
+                },
+                "slideType": "quiz",
+                "canvasStructure": [
+                    "title",
+                    "media",
+                    "answers",
+                    "meta"
+                ],
+                "answersVariant": "grid_2_columns",
+                "mediaVariant": "top_large",
+                "titleVariant": "default",
+                "supportsAnswers": [
+                    2,
+                    4,
+                    6
+                ]
+            },
+            {
+                "id": "quiz_classic_no_media",
+                "label": {
+                    "en": "Quiz no media",
+                    "ro": "Quiz fara media"
+                },
+                "slideType": "quiz",
+                "canvasStructure": [
+                    "title",
+                    "answers",
+                    "meta"
+                ],
+                "answersVariant": "grid_2_columns",
+                "mediaVariant": "hidden",
+                "titleVariant": "default",
+                "supportsAnswers": [
+                    2,
+                    4,
+                    6
+                ]
+            },
+            {
+                "id": "quiz_answers_vertical",
+                "label": {
+                    "en": "Quiz answers vertical",
+                    "ro": "Quiz raspunsuri verticale"
+                },
+                "slideType": "quiz",
+                "canvasStructure": [
+                    "title",
+                    "media",
+                    "answers",
+                    "meta"
+                ],
+                "answersVariant": "vertical_stack",
+                "mediaVariant": "top_medium",
+                "titleVariant": "default",
+                "supportsAnswers": [
+                    2,
+                    4,
+                    6
+                ]
+            },
+            {
+                "id": "quiz_media_left_answers_right",
+                "label": {
+                    "en": "Quiz media left answers right",
+                    "ro": "Quiz media stanga raspunsuri dreapta"
+                },
+                "slideType": "quiz",
+                "canvasStructure": [
+                    "title",
+                    "split_media_answers",
+                    "meta"
+                ],
+                "answersVariant": "vertical_stack",
+                "mediaVariant": "left_panel",
+                "titleVariant": "editorial",
+                "supportsAnswers": [
+                    2,
+                    4,
+                    6
+                ]
+            },
+            {
+                "id": "quiz_only_answers_big",
+                "label": {
+                    "en": "Quiz only answers big",
+                    "ro": "Quiz doar raspunsuri mari"
+                },
+                "slideType": "quiz",
+                "canvasStructure": [
+                    "title",
+                    "answers",
+                    "meta"
+                ],
+                "answersVariant": "grid_1_column_large",
+                "mediaVariant": "hidden",
+                "titleVariant": "compact",
+                "supportsAnswers": [
+                    2,
+                    4
+                ]
+            },
+            {
+                "id": "media_classic",
+                "label": {
+                    "en": "Media classic",
+                    "ro": "Media clasic"
+                },
+                "slideType": "media",
+                "canvasStructure": [
+                    "title",
+                    "media",
+                    "description"
+                ],
+                "answersVariant": "media_text_card",
+                "mediaVariant": "top_large",
+                "titleVariant": "default"
+            },
+            {
+                "id": "media_title_text",
+                "label": {
+                    "en": "Media title text",
+                    "ro": "Media titlu text"
+                },
+                "slideType": "media",
+                "canvasStructure": [
+                    "title",
+                    "description",
+                    "media"
+                ],
+                "answersVariant": "media_text_card",
+                "mediaVariant": "top_medium",
+                "titleVariant": "editorial"
+            },
+            {
+                "id": "custom_quiz_news_layout",
+                "label": {
+                    "ro": "Quiz News",
+                    "en": "Classic top image quiz"
+                },
+                "slideType": "quiz",
+                "canvasStructure": [
+                    "title",
+                    "media",
+                    "description"
+                ],
+                "answersVariant": "grid_2_columns",
+                "mediaVariant": "media_",
+                "titleVariant": "title_center_min_820px__95__",
+                "customBlocks": [],
+                "customTemplateHtml": "",
+                "supportsAnswers": [
+                    2,
+                    4
+                ]
+            }
+        ]
+    }
+}

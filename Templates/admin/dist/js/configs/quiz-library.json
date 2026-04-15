@@ -1,0 +1,630 @@
+{
+  "common": {
+    "defaultLanguage": "ro",
+    "blockColors": ["purple", "orange", "green", "yellow", "blue", "red"],
+    "limits": {
+      "questionTextMaxLength": 130,
+      "answerTextMaxLength": 80,
+      "puzzleMinBlocks": 2,
+      "puzzleMaxBlocks": 5
+    },
+    "defaults": {
+      "theme": {
+        "themeId": "theme_abstract_blue",
+        "backgroundUrl": "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1200"
+      },
+      "audio": {
+        "masterEnabled": true,
+        "musicEnabled": false,
+        "musicUrl": "",
+        "gongEnabled": false,
+        "gongStartUrl": "",
+        "gongEndUrl": "",
+        "answerSoundsEnabled": true,
+        "correctSoundUrl": "",
+        "wrongSoundUrl": ""
+      },
+      "timer": {
+        "enabled": true,
+        "selected": "20s"
+      },
+      "scoring": {
+        "basePoints": 1000,
+        "speedBonus": {
+          "enabled": true,
+          "percent": 50,
+          "withinSeconds": 10
+        },
+        "wrongAnswerPenalty": {
+          "enabled": false,
+          "mode": "equal_to_correct"
+        }
+      },
+      "imageReveal": {
+        "enabled": false,
+        "mode": "original"
+      }
+    },
+    "builder": {
+      "defaultLayoutBySlideType": {
+        "quiz": "quiz_classic_image_top",
+        "media": "media_classic"
+      },
+      "titleVariants": {
+        "default": {
+          "titleAlign": "center",
+          "titleWidth": "min(820px, 95%)"
+        },
+        "editorial": {
+          "titleAlign": "left",
+          "titleWidth": "min(920px, 96%)"
+        },
+        "compact": {
+          "titleAlign": "center",
+          "titleWidth": "min(760px, 92%)"
+        }
+      },
+      "mediaVariants": {
+        "top_large": {
+          "mediaVisible": true,
+          "mediaWidth": "min(720px, 90%)",
+          "mediaAspectRatio": "16/9"
+        },
+        "top_medium": {
+          "mediaVisible": true,
+          "mediaWidth": "min(620px, 82%)",
+          "mediaAspectRatio": "16/9"
+        },
+        "cinematic": {
+          "mediaVisible": true,
+          "mediaWidth": "min(860px, 94%)",
+          "mediaAspectRatio": "21/9"
+        },
+        "left_panel": {
+          "mediaVisible": true,
+          "mediaWidth": "100%",
+          "mediaAspectRatio": "4/3",
+          "splitMode": true
+        },
+        "hidden": {
+          "mediaVisible": false
+        }
+      },
+      "answersVariants": {
+        "grid_2_columns": {
+          "answerColumns": 2,
+          "answerGap": 18,
+          "answerMinHeight": 84,
+          "answerRadius": 22,
+          "answerFontSize": 18,
+          "answerImageWidth": 140,
+          "answersWidth": "min(900px, 95%)"
+        },
+        "vertical_stack": {
+          "answerColumns": 1,
+          "answerGap": 14,
+          "answerMinHeight": 74,
+          "answerRadius": 18,
+          "answerFontSize": 17,
+          "answerImageWidth": 110,
+          "answersWidth": "min(820px, 92%)"
+        },
+        "grid_1_column_large": {
+          "answerColumns": 1,
+          "answerGap": 16,
+          "answerMinHeight": 88,
+          "answerRadius": 16,
+          "answerFontSize": 18,
+          "answerImageWidth": 150,
+          "answersWidth": "min(960px, 95%)"
+        },
+        "media_text_card": {
+          "answerColumns": 1,
+          "answersWidth": "min(900px,95%)",
+          "mediaTextWidth": "min(900px,95%)"
+        }
+      },
+      "layoutRegistry": [
+        {
+          "id": "quiz_classic_image_top",
+          "label": {
+            "en": "Quiz classic image top",
+            "ro": "Quiz clasic cu imagine sus",
+            "ru": "Классическая викторина с изображением сверху",
+            "fr": "Quiz classique image en haut",
+            "de": "Klassisches Quiz mit Bild oben",
+            "it": "Quiz classico con immagine sopra",
+            "es": "Quiz clasico con imagen arriba",
+            "pt": "Quiz classico com imagem no topo",
+            "uk": "Класичний квіз із зображенням зверху",
+            "pl": "Klasyczny quiz z obrazem u góry",
+            "cs": "Klasicky kvíz s obrázkem nahoře",
+            "hu": "Klasszikus kvíz képpel felül",
+            "bg": "Класически куиз с изображение горе",
+            "el": "Κλασικό κουίζ με εικόνα επάνω",
+            "tr": "Ustte görselli klasik quiz",
+            "ar": "اختبار كلاسيكي مع صورة في الأعلى",
+            "he": "חידון קלאסי עם תמונה למעלה",
+            "zh": "顶部图片经典问答",
+            "ja": "上部画像のクラシッククイズ",
+            "ko": "상단 이미지 클래식 퀴즈"
+          },
+          "slideType": "quiz",
+          "canvasStructure": ["title", "media", "answers", "meta"],
+          "answersVariant": "grid_2_columns",
+          "mediaVariant": "top_large",
+          "titleVariant": "default",
+          "supportsAnswers": [2, 4, 6]
+        },
+        {
+          "id": "quiz_classic_no_media",
+          "label": {
+            "en": "Quiz no media",
+            "ro": "Quiz fara media",
+            "ru": "Викторина без медиа",
+            "fr": "Quiz sans media",
+            "de": "Quiz ohne Medien",
+            "it": "Quiz senza media",
+            "es": "Quiz sin media",
+            "pt": "Quiz sem media",
+            "uk": "Квіз без медіа",
+            "pl": "Quiz bez mediow",
+            "cs": "Kvíz bez médií",
+            "hu": "Kvíz média nélkül",
+            "bg": "Куиз без медия",
+            "el": "Κουίζ χωρίς media",
+            "tr": "Medyasiz quiz",
+            "ar": "اختبار بدون وسائط",
+            "he": "חידון ללא מדיה",
+            "zh": "无媒体问答",
+            "ja": "メディアなしクイズ",
+            "ko": "미디어 없는 퀴즈"
+          },
+          "slideType": "quiz",
+          "canvasStructure": ["title", "answers", "meta"],
+          "answersVariant": "grid_2_columns",
+          "mediaVariant": "hidden",
+          "titleVariant": "default",
+          "supportsAnswers": [2, 4, 6]
+        },
+        {
+          "id": "quiz_answers_vertical",
+          "label": {
+            "en": "Quiz answers vertical",
+            "ro": "Quiz raspunsuri verticale"
+          },
+          "slideType": "quiz",
+          "canvasStructure": ["title", "media", "answers", "meta"],
+          "answersVariant": "vertical_stack",
+          "mediaVariant": "top_medium",
+          "titleVariant": "default",
+          "supportsAnswers": [2, 4, 6]
+        },
+        {
+          "id": "quiz_media_left_answers_right",
+          "label": {
+            "en": "Quiz media left answers right",
+            "ro": "Quiz media stanga raspunsuri dreapta"
+          },
+          "slideType": "quiz",
+          "canvasStructure": ["title", "split_media_answers", "meta"],
+          "answersVariant": "vertical_stack",
+          "mediaVariant": "left_panel",
+          "titleVariant": "editorial",
+          "supportsAnswers": [2, 4, 6]
+        },
+        {
+          "id": "quiz_only_answers_big",
+          "label": {
+            "en": "Quiz only answers big",
+            "ro": "Quiz doar raspunsuri mari"
+          },
+          "slideType": "quiz",
+          "canvasStructure": ["title", "answers", "meta"],
+          "answersVariant": "grid_1_column_large",
+          "mediaVariant": "hidden",
+          "titleVariant": "compact",
+          "supportsAnswers": [2, 4]
+        },
+        {
+          "id": "media_classic",
+          "label": {
+            "en": "Media classic",
+            "ro": "Media clasic"
+          },
+          "slideType": "media",
+          "canvasStructure": ["title", "media", "description"],
+          "answersVariant": "media_text_card",
+          "mediaVariant": "top_large",
+          "titleVariant": "default"
+        },
+        {
+          "id": "media_title_text",
+          "label": {
+            "en": "Media title text",
+            "ro": "Media titlu text"
+          },
+          "slideType": "media",
+          "canvasStructure": ["title", "description", "media"],
+          "answersVariant": "media_text_card",
+          "mediaVariant": "top_medium",
+          "titleVariant": "editorial"
+        }
+      ],
+      "canvasPresets": {
+        "quiz": [
+          {
+            "id": "classic-grid",
+            "name": "Classic Grid",
+            "description": "Titlu centrat, media mare, raspunsuri in grid 2x2.",
+            "titleAlign": "center",
+            "titleWidth": "min(820px, 95%)",
+            "mediaWidth": "min(720px, 90%)",
+            "mediaAspectRatio": "16/9",
+            "answerColumns": 2,
+            "answerGap": 18,
+            "answerMinHeight": 84,
+            "answerRadius": 22,
+            "answerFontSize": 18,
+            "answerImageWidth": 140,
+            "answersWidth": "min(900px, 95%)"
+          },
+          {
+            "id": "headline-stack",
+            "name": "Headline Stack",
+            "description": "Titlu aliniat stanga si raspunsuri verticale, bune pentru storytelling.",
+            "titleAlign": "left",
+            "titleWidth": "min(920px, 96%)",
+            "mediaWidth": "min(760px, 92%)",
+            "mediaAspectRatio": "16/9",
+            "answerColumns": 1,
+            "answerGap": 14,
+            "answerMinHeight": 74,
+            "answerRadius": 18,
+            "answerFontSize": 17,
+            "answerImageWidth": 110,
+            "answersWidth": "min(820px, 92%)"
+          },
+          {
+            "id": "compact-pills",
+            "name": "Compact Pills",
+            "description": "Blocuri foarte rotunjite si compacte pentru multe intrebari rapide.",
+            "titleAlign": "center",
+            "titleWidth": "min(760px, 92%)",
+            "mediaWidth": "min(620px, 82%)",
+            "mediaAspectRatio": "16/9",
+            "answerColumns": 2,
+            "answerGap": 14,
+            "answerMinHeight": 68,
+            "answerRadius": 999,
+            "answerFontSize": 16,
+            "answerImageWidth": 96,
+            "answersWidth": "min(820px, 92%)"
+          },
+          {
+            "id": "editorial-focus",
+            "name": "Editorial Focus",
+            "description": "Titlu lat, media cinematica si raspunsuri mari, aerisite.",
+            "titleAlign": "left",
+            "titleWidth": "min(900px, 94%)",
+            "mediaWidth": "min(860px, 94%)",
+            "mediaAspectRatio": "21/9",
+            "answerColumns": 1,
+            "answerGap": 16,
+            "answerMinHeight": 80,
+            "answerRadius": 16,
+            "answerFontSize": 18,
+            "answerImageWidth": 150,
+            "answersWidth": "min(960px, 95%)"
+          }
+        ],
+        "media": [
+          {
+            "id": "media-classic",
+            "name": "Media Classic",
+            "description": "Imagine mare si text intr-un card simplu.",
+            "titleAlign": "center",
+            "titleWidth": "min(820px, 95%)",
+            "mediaWidth": "min(720px, 90%)",
+            "mediaAspectRatio": "16/9",
+            "answersWidth": "min(900px,95%)",
+            "mediaTextWidth": "min(900px,95%)"
+          },
+          {
+            "id": "media-feature",
+            "name": "Media Feature",
+            "description": "Titlu lat si media mai cinematica pentru prezentare.",
+            "titleAlign": "left",
+            "titleWidth": "min(920px, 96%)",
+            "mediaWidth": "min(860px, 94%)",
+            "mediaAspectRatio": "21/9",
+            "answersWidth": "min(960px,95%)",
+            "mediaTextWidth": "min(960px,95%)"
+          },
+          {
+            "id": "media-article",
+            "name": "Media Article",
+            "description": "Textul devine zona principala, media ramane suport.",
+            "titleAlign": "left",
+            "titleWidth": "min(900px, 94%)",
+            "mediaWidth": "min(640px, 82%)",
+            "mediaAspectRatio": "4/3",
+            "answersWidth": "min(760px,90%)",
+            "mediaTextWidth": "min(760px,90%)"
+          }
+        ]
+      }
+    },
+    "i18n": {
+      "ro": {
+        "confirmAnswer": "Confirmă răspunsul"
+      }
+    }
+  },
+  "assets": {
+    "themes": [
+      {
+        "id": "theme_abstract_blue",
+        "name": "Abstract Blue",
+        "url": "https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1200",
+        "description": "Rece, curat, corporate",
+        "tokens": {
+          "accent": "#2E85C7",
+          "accentStrong": "#0A5084",
+          "titleSurface": "rgba(255,255,255,0.96)",
+          "titleColor": "#0A5084",
+          "surface": "rgba(255,255,255,0.94)",
+          "mediaBorderColor": "#ff9f43",
+          "mediaBorderWidth": 4,
+          "cardOverlay": "linear-gradient(180deg, rgba(7,25,43,0.18), rgba(7,25,43,0.38))"
+        }
+      },
+      {
+        "id": "theme_sunset_burst",
+        "name": "Sunset Burst",
+        "url": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=1200",
+        "description": "Cald, energic, dramatic",
+        "tokens": {
+          "accent": "#ff7a18",
+          "accentStrong": "#ab2f12",
+          "titleSurface": "rgba(39,16,10,0.72)",
+          "titleColor": "#fff7ef",
+          "surface": "rgba(255,245,238,0.96)",
+          "mediaBorderColor": "#ffd166",
+          "mediaBorderWidth": 5,
+          "answerRadius": 18,
+          "cardOverlay": "linear-gradient(180deg, rgba(79,20,10,0.20), rgba(79,20,10,0.48))"
+        }
+      },
+      {
+        "id": "theme_night_glass",
+        "name": "Night Glass",
+        "url": "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200",
+        "description": "Dark, high-tech, premium",
+        "tokens": {
+          "accent": "#5eead4",
+          "accentStrong": "#d1fae5",
+          "titleSurface": "rgba(15,23,42,0.72)",
+          "titleColor": "#e2e8f0",
+          "surface": "rgba(255,255,255,0.92)",
+          "mediaBorderColor": "#5eead4",
+          "mediaBorderWidth": 3,
+          "answerRadius": 24,
+          "cardOverlay": "linear-gradient(180deg, rgba(2,6,23,0.24), rgba(2,6,23,0.55))"
+        }
+      }
+    ],
+    "audioLibrary": [
+      {
+        "id": "music_01",
+        "name": "LoFi Calm",
+        "category": "music",
+        "url": "https://site-ul-tau.com/audio/lofi-calm.mp3"
+      },
+      {
+        "id": "music_02",
+        "name": "Quiz Beat",
+        "category": "music",
+        "url": "https://site-ul-tau.com/audio/quiz-beat.mp3"
+      },
+      {
+        "id": "correct_01",
+        "name": "Aplauze",
+        "category": "correct",
+        "url": "https://site-ul-tau.com/audio/applause.mp3"
+      },
+      {
+        "id": "correct_02",
+        "name": "Positive Bell",
+        "category": "correct",
+        "url": "https://site-ul-tau.com/audio/positive-bell.mp3"
+      },
+      {
+        "id": "wrong_01",
+        "name": "Buzzer",
+        "category": "wrong",
+        "url": "https://site-ul-tau.com/audio/buzzer.mp3"
+      },
+      {
+        "id": "wrong_02",
+        "name": "Negative Tone",
+        "category": "wrong",
+        "url": "https://site-ul-tau.com/audio/negative-tone.mp3"
+      },
+      {
+        "id": "gong_start_01",
+        "name": "Gong Start",
+        "category": "gongStart",
+        "url": "https://site-ul-tau.com/audio/gong-start.mp3"
+      },
+      {
+        "id": "gong_end_01",
+        "name": "Gong End",
+        "category": "gongEnd",
+        "url": "https://site-ul-tau.com/audio/gong-end.mp3"
+      }
+    ]
+  },
+  "questionTypes": [
+    {
+      "id": "quiz",
+      "name": "Quiz (Grilă)",
+      "icon": "https://quizdigo.com/quizigo/11.png",
+      "desc": "Alegere multiplă",
+      "enabled": true,
+      "settings": {
+        "answerCount": 6,
+        "allowMultiple": true,
+        "limits": {
+          "questionTextMaxLength": 130,
+          "answerTextMaxLength": 80
+        },
+        "timer": {
+          "enabled": true,
+          "selected": "20s"
+        },
+        "scoring": {
+          "basePoints": 1000,
+          "speedBonus": {
+            "enabled": true,
+            "percent": 50,
+            "withinSeconds": 10
+          },
+          "wrongAnswerPenalty": {
+            "enabled": true,
+            "mode": "equal_to_correct"
+          }
+        },
+        "audio": {
+          "musicEnabled": false,
+          "musicUrl": "",
+          "answerSoundsEnabled": true,
+          "correctSoundUrl": "",
+          "wrongSoundUrl": "",
+          "gongEnabled": false,
+          "gongStartUrl": "",
+          "gongEndUrl": ""
+        },
+        "allowedMediaTypes": ["image", "video", "audio", "youtube", "vimeo"]
+      }
+    },
+    {
+      "id": "true-false",
+      "name": "Adevărat / Fals",
+      "icon": "https://quizdigo.com/quizigo/22.png",
+      "desc": "Două variante",
+      "enabled": true,
+      "settings": {
+        "limits": {
+          "questionTextMaxLength": 130,
+          "answerTextMaxLength": 80
+        },
+        "audio": {
+          "musicEnabled": false,
+          "musicUrl": "",
+          "answerSoundsEnabled": true,
+          "correctSoundUrl": "",
+          "wrongSoundUrl": "",
+          "gongEnabled": false,
+          "gongStartUrl": "",
+          "gongEndUrl": ""
+        }
+      }
+    },
+    {
+      "id": "open-ended",
+      "name": "Tastează răspunsul",
+      "icon": "https://quizdigo.com/quizigo/33.png",
+      "desc": "Text liber",
+      "enabled": true,
+      "settings": {
+        "limits": {
+          "questionTextMaxLength": 130,
+          "answerTextMaxLength": 80
+        },
+        "audio": {
+          "musicEnabled": false,
+          "musicUrl": "",
+          "answerSoundsEnabled": true,
+          "correctSoundUrl": "",
+          "wrongSoundUrl": "",
+          "gongEnabled": false,
+          "gongStartUrl": "",
+          "gongEndUrl": ""
+        }
+      }
+    },
+    {
+      "id": "puzzle",
+      "name": "Puzzle",
+      "icon": "https://quizdigo.com/quizigo/44.png",
+      "desc": "Ordonare",
+      "enabled": true,
+      "engineType": "jumble",
+      "settings": {
+        "minBlocks": 2,
+        "maxBlocks": 5,
+        "confirmButton": true,
+        "limits": {
+          "questionTextMaxLength": 130,
+          "answerTextMaxLength": 80
+        },
+        "audio": {
+          "musicEnabled": false,
+          "musicUrl": "",
+          "answerSoundsEnabled": true,
+          "correctSoundUrl": "",
+          "wrongSoundUrl": "",
+          "gongEnabled": false,
+          "gongStartUrl": "",
+          "gongEndUrl": ""
+        }
+      }
+    },
+    {
+      "id": "slider",
+      "name": "Slider",
+      "icon": "https://quizdigo.com/quizigo/55.png",
+      "desc": "Interval + valoare",
+      "enabled": true,
+      "settings": {
+        "sliderMin": 0,
+        "sliderMax": 50,
+        "sliderCorrect": 25,
+        "audio": {
+          "musicEnabled": false,
+          "musicUrl": "",
+          "answerSoundsEnabled": true,
+          "correctSoundUrl": "",
+          "wrongSoundUrl": "",
+          "gongEnabled": false,
+          "gongStartUrl": "",
+          "gongEndUrl": ""
+        }
+      }
+    },
+    {
+      "id": "pin",
+      "name": "Pin answer",
+      "icon": "https://quizdigo.com/quizigo/66.png",
+      "desc": "Pin pe imagine",
+      "enabled": true,
+      "settings": {
+        "limits": {
+          "questionTextMaxLength": 130
+        },
+        "audio": {
+          "musicEnabled": false,
+          "musicUrl": "",
+          "answerSoundsEnabled": true,
+          "correctSoundUrl": "",
+          "wrongSoundUrl": "",
+          "gongEnabled": false,
+          "gongStartUrl": "",
+          "gongEndUrl": ""
+        }
+      }
+    }
+  ],
+  "quizzes": []
+}

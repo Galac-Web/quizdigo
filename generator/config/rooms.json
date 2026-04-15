@@ -1,0 +1,15 @@
+{
+    "table": "rooms",
+    "fields": {
+        "room_uid": "VARCHAR(64) NOT NULL",
+        "title": "VARCHAR(255) NOT NULL",
+        "status": "TINYINT(1) DEFAULT 1",
+        "phase": "VARCHAR(50)",
+        "countdown_sec": "INT DEFAULT 10",
+        "duration_sec": "INT DEFAULT 90",
+        "start_at": "BIGINT",
+        "end_at": "BIGINT",
+        "created_by": "INT",
+        "meta": "TEXT NULL"
+    }
+}

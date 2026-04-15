@@ -1,0 +1,52 @@
+{
+  "audioLibrary": [
+    {
+      "id": "music_01",
+      "name": "LoFi Calm",
+      "category": "music",
+      "url": "https://site-ul-tau.com/audio/lofi-calm.mp3"
+    },
+    {
+      "id": "music_02",
+      "name": "Quiz Beat",
+      "category": "music",
+      "url": "https://site-ul-tau.com/audio/quiz-beat.mp3"
+    },
+    {
+      "id": "correct_01",
+      "name": "Aplauze",
+      "category": "correct",
+      "url": "https://site-ul-tau.com/audio/applause.mp3"
+    },
+    {
+      "id": "correct_02",
+      "name": "Positive Bell",
+      "category": "correct",
+      "url": "https://site-ul-tau.com/audio/positive-bell.mp3"
+    },
+    {
+      "id": "wrong_01",
+      "name": "Buzzer",
+      "category": "wrong",
+      "url": "https://site-ul-tau.com/audio/buzzer.mp3"
+    },
+    {
+      "id": "wrong_02",
+      "name": "Negative Tone",
+      "category": "wrong",
+      "url": "https://site-ul-tau.com/audio/negative-tone.mp3"
+    },
+    {
+      "id": "gong_start_01",
+      "name": "Gong Start",
+      "category": "gongStart",
+      "url": "https://site-ul-tau.com/audio/gong-start.mp3"
+    },
+    {
+      "id": "gong_end_01",
+      "name": "Gong End",
+      "category": "gongEnd",
+      "url": "https://site-ul-tau.com/audio/gong-end.mp3"
+    }
+  ]
+}

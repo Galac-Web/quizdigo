@@ -1,0 +1,271 @@
+{
+    "questionTypes": [
+        {
+            "id": "quiz",
+            "name": "Quiz (Grila)",
+            "icon": "https://quizdigo.com/quizigo/11.png",
+            "desc": "Alegere multipla",
+            "enabled": true,
+            "settings": {
+                "answerCount": 6,
+                "allowMultiple": true,
+                "limits": {
+                    "questionTextMaxLength": 130,
+                    "answerTextMaxLength": 80
+                },
+                "timer": {
+                    "enabled": true,
+                    "selected": "20s"
+                },
+                "scoring": {
+                    "basePoints": 1000,
+                    "speedBonus": {
+                        "enabled": true,
+                        "percent": 50,
+                        "withinSeconds": 10
+                    },
+                    "wrongAnswerPenalty": {
+                        "enabled": true,
+                        "mode": "equal_to_correct"
+                    }
+                },
+                "audio": {
+                    "musicEnabled": false,
+                    "musicUrl": "",
+                    "answerSoundsEnabled": true,
+                    "correctSoundUrl": "",
+                    "wrongSoundUrl": "",
+                    "gongEnabled": false,
+                    "gongStartUrl": "",
+                    "gongEndUrl": ""
+                },
+                "allowedMediaTypes": [
+                    "image",
+                    "video",
+                    "audio",
+                    "youtube",
+                    "vimeo"
+                ]
+            }
+        },
+        {
+            "id": "true-false",
+            "name": "Adevarat / Fals",
+            "icon": "https://quizdigo.com/quizigo/22.png",
+            "desc": "Doua variante",
+            "enabled": true,
+            "settings": {
+                "limits": {
+                    "questionTextMaxLength": 130,
+                    "answerTextMaxLength": 80
+                },
+                "audio": {
+                    "musicEnabled": false,
+                    "musicUrl": "",
+                    "answerSoundsEnabled": true,
+                    "correctSoundUrl": "",
+                    "wrongSoundUrl": "",
+                    "gongEnabled": false,
+                    "gongStartUrl": "",
+                    "gongEndUrl": ""
+                }
+            }
+        },
+        {
+            "id": "open-ended",
+            "name": "Tasteaza raspunsul",
+            "icon": "https://quizdigo.com/quizigo/33.png",
+            "desc": "Text liber",
+            "enabled": true,
+            "settings": {
+                "limits": {
+                    "questionTextMaxLength": 130,
+                    "answerTextMaxLength": 80
+                },
+                "audio": {
+                    "musicEnabled": false,
+                    "musicUrl": "",
+                    "answerSoundsEnabled": true,
+                    "correctSoundUrl": "",
+                    "wrongSoundUrl": "",
+                    "gongEnabled": false,
+                    "gongStartUrl": "",
+                    "gongEndUrl": ""
+                }
+            }
+        },
+        {
+            "id": "puzzle",
+            "name": "Puzzle",
+            "icon": "https://quizdigo.com/quizigo/44.png",
+            "desc": "Ordonare",
+            "enabled": true,
+            "engineType": "jumble",
+            "settings": {
+                "minBlocks": 2,
+                "maxBlocks": 5,
+                "confirmButton": true,
+                "limits": {
+                    "questionTextMaxLength": 130,
+                    "answerTextMaxLength": 80
+                },
+                "audio": {
+                    "musicEnabled": false,
+                    "musicUrl": "",
+                    "answerSoundsEnabled": true,
+                    "correctSoundUrl": "",
+                    "wrongSoundUrl": "",
+                    "gongEnabled": false,
+                    "gongStartUrl": "",
+                    "gongEndUrl": ""
+                }
+            }
+        },
+        {
+            "id": "slider",
+            "name": "Slider",
+            "icon": "https://quizdigo.com/quizigo/55.png",
+            "desc": "Interval + valoare",
+            "enabled": true,
+            "settings": {
+                "sliderMin": 0,
+                "sliderMax": 50,
+                "sliderCorrect": 25,
+                "audio": {
+                    "musicEnabled": false,
+                    "musicUrl": "",
+                    "answerSoundsEnabled": true,
+                    "correctSoundUrl": "",
+                    "wrongSoundUrl": "",
+                    "gongEnabled": false,
+                    "gongStartUrl": "",
+                    "gongEndUrl": ""
+                }
+            }
+        },
+        {
+            "id": "pin",
+            "name": "Pin answer",
+            "icon": "https://quizdigo.com/quizigo/66.png",
+            "desc": "Pin pe imagine",
+            "enabled": true,
+            "settings": {
+                "limits": {
+                    "questionTextMaxLength": 130
+                },
+                "audio": {
+                    "musicEnabled": false,
+                    "musicUrl": "",
+                    "answerSoundsEnabled": true,
+                    "correctSoundUrl": "",
+                    "wrongSoundUrl": "",
+                    "gongEnabled": false,
+                    "gongStartUrl": "",
+                    "gongEndUrl": ""
+                }
+            }
+        },
+        {
+            "id": "quiz_news",
+            "name": "Quiz News",
+            "icon": "https://quizdigo.com/quizigo/11.png",
+            "desc": "Descrier",
+            "enabled": true,
+            "settings": {
+                "slideType": "custom",
+                "layoutId": "custom_quiz_news_layout",
+                "answerCount": 4,
+                "allowMultiple": false,
+                "limits": {
+                    "questionTextMaxLength": 130,
+                    "answerTextMaxLength": 80
+                },
+                "timer": {
+                    "enabled": true,
+                    "selected": "20s"
+                },
+                "scoring": {
+                    "basePoints": 1000,
+                    "speedBonus": {
+                        "enabled": true,
+                        "percent": 50,
+                        "withinSeconds": 10
+                    },
+                    "wrongAnswerPenalty": {
+                        "enabled": false,
+                        "mode": "equal_to_correct"
+                    }
+                },
+                "lang": "ro",
+                "builderMode": "custom",
+                "audio": {
+                    "musicEnabled": true,
+                    "musicUrl": "",
+                    "answerSoundsEnabled": true,
+                    "correctSoundUrl": "",
+                    "wrongSoundUrl": "",
+                    "gongEnabled": true,
+                    "gongStartUrl": "",
+                    "gongEndUrl": ""
+                },
+                "themeId": "theme_abstract_blue",
+                "imageReveal": {
+                    "enabled": false,
+                    "mode": "none"
+                },
+                "answerPresentation": {
+                    "useMainMediaAsAnswerBackground": false
+                },
+                "interaction": {
+                    "type": "text_input",
+                    "widget": "answer_buttons",
+                    "sourceRole": "description",
+                    "targetRole": "answers",
+                    "confirmButton": true,
+                    "autoEvaluate": false,
+                    "notes": "Jucatorul alege unul sau mai multe raspunsuri."
+                },
+                "textEntry": {
+                    "placeholder": "Tasteaza raspunsul aici..ds",
+                    "acceptedAnswers": []
+                },
+                "sliderConfig": {
+                    "min": 0,
+                    "max": 100,
+                    "correct": 50,
+                    "step": 1
+                },
+                "sliderMin": 0,
+                "sliderMax": 100,
+                "sliderCorrect": 50,
+                "hotspotConfig": {
+                    "x": 50,
+                    "y": 50,
+                    "tolerance": 12
+                },
+                "dragDropConfig": {
+                    "zoneCount": 4,
+                    "zoneLabels": [
+                        "Zona 1",
+                        "Zona 2",
+                        "Zona 3",
+                        "Zona 4"
+                    ]
+                },
+                "matchPairsConfig": {
+                    "pairCount": 4,
+                    "rightItems": [
+                        "Tinta 1",
+                        "Tinta 2",
+                        "Tinta 3",
+                        "Tinta 4"
+                    ]
+                },
+                "allowedMediaTypes": [
+                    "image",
+                    "audio"
+                ]
+            }
+        }
+    ]
+}

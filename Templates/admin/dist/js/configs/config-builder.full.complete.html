@@ -1,0 +1,4122 @@
+<!doctype html>
+<html lang="ro">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quiz Constructor Wizard</title>
+  <style>
+    :root {
+      --bg: #eef4fb;
+      --card: #ffffff;
+      --line: #d9e2ec;
+      --text: #102a43;
+      --muted: #5c6f82;
+      --accent: #1b74d1;
+      --accent-dark: #0a4f90;
+      --good: #11895b;
+      --soft: #f7fbff;
+      --shadow: 0 16px 36px rgba(16, 42, 67, 0.08);
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top right, rgba(27,116,209,0.10), transparent 28%),
+        linear-gradient(180deg, #ecf3fb 0%, #f8fbff 100%);
+      color: var(--text);
+    }
+
+    .page {
+      max-width: 1520px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      border-radius: 28px;
+      padding: 28px;
+      color: #fff;
+      background: linear-gradient(135deg, #0b4d90, #1b74d1);
+      box-shadow: 0 24px 60px rgba(10, 79, 144, 0.22);
+      margin-bottom: 18px;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 34px;
+      line-height: 1.1;
+    }
+
+    .hero p {
+      margin: 0;
+      max-width: 980px;
+      line-height: 1.55;
+      font-size: 15px;
+      opacity: 0.97;
+    }
+    .version-badge {
+      display: inline-block;
+      margin-top: 12px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.25);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.02em;
+    }
+    .notice-box {
+      margin-top: 10px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: #fff7df;
+      border: 1px solid #f4d37c;
+      color: #7a4a00;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(700px, 1.1fr) minmax(360px, .9fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel, .preview-card, .result-card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+    }
+    .side {
+      position: sticky;
+      top: 18px;
+      align-self: start;
+    }
+    .result-card {
+      display: none;
+    }
+
+    .panel {
+      padding: 18px;
+    }
+
+    .step {
+      border-top: 1px solid var(--line);
+      padding: 18px 0;
+    }
+
+    .step:first-child {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .step-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .step-index {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: #e7f1ff;
+      color: var(--accent-dark);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+    }
+
+    .step h2 {
+      margin: 0;
+      font-size: 20px;
+      color: var(--accent-dark);
+    }
+
+    .hint {
+      margin: 0 0 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .guide {
+      background: linear-gradient(180deg, #f8fbff 0%, #eef5ff 100%);
+      border: 1px solid #cfe1ff;
+      border-radius: 18px;
+      padding: 14px 16px;
+      margin-bottom: 16px;
+    }
+
+    .guide strong {
+      color: var(--accent-dark);
+    }
+
+    .guide ol {
+      margin: 8px 0 0 18px;
+      padding: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .guide-card {
+      background: #fff;
+      border: 1px solid #cfe1ff;
+      border-radius: 16px;
+      padding: 12px 14px;
+    }
+    .guide-card h4 {
+      margin: 0 0 8px;
+      color: var(--accent-dark);
+      font-size: 14px;
+    }
+    .guide-card p,
+    .guide-card li {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .guide-card ul,
+    .guide-card ol {
+      margin: 8px 0 0 18px;
+      padding: 0;
+    }
+    .cards-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin: 0 0 12px;
+    }
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+    .manage-card {
+      border: 1px solid #d8e7fb;
+      border-radius: 20px;
+      background: #fff;
+      overflow: hidden;
+      box-shadow: 0 12px 28px rgba(16, 42, 67, 0.06);
+    }
+    .manage-card-media {
+      height: 130px;
+      background: linear-gradient(135deg, #eef5ff, #d7e8ff);
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+    .manage-card-media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .manage-card-body {
+      padding: 14px;
+    }
+    .manage-card-body h4 {
+      margin: 0 0 6px;
+      color: var(--accent-dark);
+      font-size: 16px;
+    }
+    .manage-card-body p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+      min-height: 38px;
+    }
+    .manage-card-footer {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding: 0 14px 14px;
+    }
+    .manage-card.add-card {
+      border-style: dashed;
+      display: grid;
+      place-items: center;
+      min-height: 250px;
+      cursor: pointer;
+      background: #f8fbff;
+    }
+    .custom-block-grid {
+      display: grid;
+      gap: 12px;
+    }
+    .custom-block-row .row-4 {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .tiny-note {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .manage-card.add-card .plus {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: #dcecff;
+      color: var(--accent-dark);
+      display: grid;
+      place-items: center;
+      font-size: 34px;
+      font-weight: 900;
+      margin: 0 auto 10px;
+    }
+    .section-divider {
+      margin: 18px 0;
+      border-top: 1px solid var(--line);
+    }
+    .hidden-block {
+      display: none;
+    }
+    .mini-guide {
+      margin: 0 0 14px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: #f8fbff;
+      border: 1px solid #d8e7fb;
+    }
+    .mini-guide strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--accent-dark);
+    }
+    .mini-guide p,
+    .mini-guide li {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .mini-guide ol {
+      margin: 8px 0 0 18px;
+      padding: 0;
+    }
+    .api-box {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: #eef8f3;
+      border: 1px solid #bfe5cd;
+    }
+    .api-box strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #0d6a44;
+    }
+    .api-box p,
+    .api-box li {
+      margin: 0;
+      color: #29664b;
+      font-size: 13px;
+      line-height: 1.55;
+    }
+    .api-box ul {
+      margin: 8px 0 0 18px;
+      padding: 0;
+    }
+    .tab-nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .tab-btn {
+      border: 1px solid #cfe1ff;
+      background: #f5f9ff;
+      color: var(--accent-dark);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #0b4d90, #1b74d1);
+      color: #fff;
+      border-color: #0b4d90;
+    }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+    .popup-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.52);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 1000;
+    }
+    .popup-backdrop.show { display: flex; }
+    .popup-card {
+      width: min(1080px, 96vw);
+      max-height: 88vh;
+      overflow: auto;
+      background: #fff;
+      border-radius: 24px;
+      border: 1px solid var(--line);
+      box-shadow: 0 30px 80px rgba(15, 23, 42, 0.22);
+      padding: 18px;
+    }
+    .popup-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+      margin-bottom: 14px;
+    }
+    .popup-head h3 {
+      margin: 0 0 6px;
+      color: var(--accent-dark);
+    }
+    .popup-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .popup-item {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 12px;
+      background: #fbfdff;
+    }
+    .popup-item .asset-preview {
+      max-height: 140px;
+    }
+    .gradient-preview {
+      height: 90px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      margin-bottom: 10px;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .row-3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .field {
+      margin-bottom: 12px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      color: var(--accent-dark);
+    }
+
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px 12px;
+      font: inherit;
+      color: var(--text);
+      background: #fff;
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .chips {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--soft);
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .chip input { width: auto; margin: 0; }
+
+    .mini-card-list {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .mini-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      background: #fbfdff;
+    }
+
+    .mini-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 10px;
+    }
+
+    .mini-card-title {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--accent-dark);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-weight: 800;
+      cursor: pointer;
+      background: var(--accent);
+      color: #fff;
+    }
+
+    button.secondary {
+      background: #dce7f1;
+      color: var(--text);
+    }
+
+    button.good {
+      background: var(--good);
+    }
+
+    button.link {
+      background: transparent;
+      color: #c62828;
+      padding: 0;
+    }
+
+    .side {
+      display: grid;
+      gap: 16px;
+    }
+
+    .preview-card, .result-card {
+      overflow: hidden;
+    }
+
+    .card-head {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, #fbfdff 0%, #eff6ff 100%);
+    }
+
+    .card-head h3 {
+      margin: 0 0 6px;
+      font-size: 18px;
+      color: var(--accent-dark);
+    }
+
+    .card-head p {
+      margin: 0;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+
+    .card-body {
+      padding: 16px 18px 18px;
+    }
+
+    .summary-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .summary-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 12px;
+      background: #fbfdff;
+      font-size: 13px;
+    }
+
+    .summary-item strong {
+      color: var(--accent-dark);
+    }
+
+    .canvas-demo {
+      border-radius: 20px;
+      min-height: 420px;
+      padding: 18px;
+      background:
+        linear-gradient(180deg, rgba(0,0,0,0.12), rgba(0,0,0,0.22)),
+        var(--demo-bg, linear-gradient(135deg, #2e85c7, #0a5084));
+      display: grid;
+      gap: 14px;
+      align-content: start;
+      color: #fff;
+    }
+
+    .demo-title {
+      background: rgba(255,255,255,0.95);
+      color: var(--demo-title-color, #0a5084);
+      border-radius: 14px;
+      padding: 14px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .demo-media {
+      min-height: 160px;
+      border-radius: 18px;
+      border: 4px solid var(--demo-border, #ff9f43);
+      background: rgba(255,255,255,0.16);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+    }
+
+    .demo-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .demo-answers {
+      display: grid;
+      gap: 12px;
+    }
+
+    .demo-answer {
+      min-height: 62px;
+      border-radius: var(--demo-answer-radius, 18px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+      font-weight: 800;
+      background: rgba(255,255,255,0.92);
+      color: #102a43;
+      text-align: center;
+    }
+
+    .result-card textarea {
+      width: 100%;
+      min-height: 230px;
+      border-radius: 16px;
+      background: #0f172a;
+      color: #e2e8f0;
+      border: 1px solid #334155;
+      font-family: Consolas, monospace;
+      font-size: 13px;
+    }
+
+    .small { font-size: 12px; color: var(--muted); }
+    .status-banner {
+      margin-top: 12px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 700;
+      display: none;
+    }
+    .status-banner.show { display: block; }
+    .status-banner.info { background: #e8f1ff; color: #0a4f90; }
+    .status-banner.success { background: #e7f8f1; color: #11643f; }
+    .status-banner.error { background: #feeceb; color: #a12622; }
+    .asset-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      margin-bottom: 10px;
+    }
+    .asset-grid {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .asset-item {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 12px;
+      background: #fbfdff;
+    }
+    .asset-item h4 {
+      margin: 0 0 6px;
+      font-size: 13px;
+      color: var(--accent-dark);
+    }
+    .asset-item p {
+      margin: 0 0 8px;
+      font-size: 12px;
+      color: var(--muted);
+      word-break: break-word;
+    }
+    .media-split {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .media-box {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: #fbfdff;
+      padding: 14px;
+    }
+    .media-box h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+      color: var(--accent-dark);
+    }
+    .media-box p {
+      margin: 0 0 12px;
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .structure-picker {
+      display: grid;
+      gap: 16px;
+      margin-top: 10px;
+    }
+    .structure-group-title {
+      margin: 0 0 8px;
+      font-size: 15px;
+      font-weight: 900;
+      color: var(--accent-dark);
+    }
+    .structure-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .structure-card {
+      border: 2px solid #d7e3f3;
+      border-radius: 18px;
+      background: #fff;
+      padding: 10px;
+      cursor: pointer;
+      transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .structure-card:hover {
+      transform: translateY(-1px);
+      border-color: #8ab7ea;
+      box-shadow: 0 12px 24px rgba(16, 42, 67, 0.08);
+    }
+    .structure-card.active {
+      border-color: #1b74d1;
+      box-shadow: 0 0 0 3px rgba(27, 116, 209, 0.14);
+    }
+    .structure-thumb {
+      height: 116px;
+      border-radius: 14px;
+      border: 1px solid #cfd9e4;
+      background: linear-gradient(180deg, #d8d8d8 0%, #cfcfcf 100%);
+      padding: 10px;
+      display: grid;
+      gap: 8px;
+      position: relative;
+      overflow: hidden;
+    }
+    .structure-thumb.split {
+      grid-template-columns: 1fr 1fr;
+      align-items: stretch;
+    }
+    .thumb-block {
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.95);
+    }
+    .thumb-title {
+      height: 16px;
+      width: 84%;
+      justify-self: center;
+    }
+    .thumb-title.big {
+      height: 20px;
+      width: 92%;
+    }
+    .thumb-text {
+      height: 12px;
+      width: 70%;
+      justify-self: center;
+    }
+    .thumb-text.small {
+      width: 44%;
+    }
+    .thumb-media {
+      min-height: 44px;
+      background: #727272;
+      color: #fff;
+      display: grid;
+      place-items: center;
+      font-size: 20px;
+      font-weight: 800;
+    }
+    .thumb-stack {
+      display: grid;
+      gap: 6px;
+      align-content: start;
+    }
+    .thumb-line {
+      height: 10px;
+      width: 100%;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.95);
+    }
+    .thumb-line.short {
+      width: 72%;
+    }
+    .thumb-line.tiny {
+      width: 42%;
+    }
+    .structure-card label {
+      display: block;
+      margin-top: 10px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 900;
+      color: var(--text);
+    }
+    .asset-preview {
+      width: 100%;
+      max-height: 120px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      border: 1px solid var(--line);
+      background: #eef4fb;
+    }
+    .media-manager {
+      border: 1px solid #d8e7fb;
+      border-radius: 20px;
+      padding: 16px;
+      background: linear-gradient(180deg, #f8fbff 0%, #eef6ff 100%);
+      margin-bottom: 16px;
+    }
+    .media-manager h3 {
+      margin: 0 0 8px;
+      color: var(--accent-dark);
+    }
+    .media-toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+    .library-section {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--line);
+    }
+    .type-switch {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .type-switch button.active {
+      background: linear-gradient(135deg, #0b4d90, #1b74d1);
+      color: #fff;
+      border-color: #0b4d90;
+    }
+    .upload-dropzone {
+      border: 2px dashed #9dc0ee;
+      border-radius: 20px;
+      min-height: 180px;
+      background: #f8fbff;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 18px;
+      cursor: pointer;
+      transition: border-color .2s ease, background .2s ease, transform .2s ease;
+    }
+    .upload-dropzone:hover,
+    .upload-dropzone.dragover {
+      border-color: #1b74d1;
+      background: #eef6ff;
+      transform: translateY(-1px);
+    }
+    .dropzone-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: #dcecff;
+      color: var(--accent-dark);
+      display: inline-grid;
+      place-items: center;
+      font-size: 26px;
+      font-weight: 900;
+      margin: 0 auto 10px;
+    }
+    .dropzone-meta {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .hidden-input {
+      display: none;
+    }
+    .legacy-media-box {
+      display: none;
+    }
+
+    @media (max-width: 1260px) { .layout { grid-template-columns: 1fr; } .side { position: static; } }
+    @media (max-width: 860px) { .row, .row-3, .demo-split, .media-split, .popup-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <div class="hero">
+      <h1>Constructor Dinamic Pentru Quiz, Theme si Canvas</h1>
+      <p>Aici construiesti logic ce vrei sa suporte proiectul: tipul quizului, pozitia blocurilor, imaginea, biblioteca de imagini pentru teme, culorile, bonusurile, sunetele si impartirea imaginii in 2x2, 4x4 sau alte variante. La final primesti configuratia clara pentru fisierele JSON ale proiectului.</p>
+      <div class="version-badge">Builder UI v2026.04.12.2 | popup library + gradient picker</div>
+    </div>
+
+    <div class="layout">
+      <div class="panel">
+        <div class="guide">
+          <strong>Lucrezi asa:</strong>
+          <ol>
+            <li>In `Biblioteca media` incarci fisiere sau adaugi linkuri pentru imagini si audio.</li>
+            <li>In `Theme` alegi fundalul, culorile, iconul si biblioteca vizuala.</li>
+            <li>In `Layout si grila` alegi structura blocurilor si forma intrebarilor.</li>
+            <li>In `Question type` alegi bonusul, timpul si logica raspunsurilor.</li>
+            <li>La final apesi pe <strong>Salveaza in proiect</strong>.</li>
+          </ol>
+          <div class="guide-grid">
+            <div class="guide-card">
+              <h4>Ce construiesti aici</h4>
+              <p>Pagina aceasta nu creeaza direct un quiz final cu intrebari, ci iti construieste piesele de sistem: biblioteca media, theme, layout si question type.</p>
+            </div>
+            <div class="guide-card">
+              <h4>Unde se salveaza</h4>
+              <ul>
+                <li>`builder-layouts.json` pentru structura canvasului</li>
+                <li>`builder-themes.json` pentru teme</li>
+                <li>`builder-audio.json` pentru biblioteca audio</li>
+                <li>`question-types.json` pentru tipul nou de intrebare</li>
+              </ul>
+            </div>
+            <div class="guide-card">
+              <h4>Ordinea corecta</h4>
+              <ol>
+                <li>Incarci media</li>
+                <li>Construiesti theme</li>
+                <li>Construiesti layout</li>
+                <li>Legi question type de layout</li>
+              </ol>
+            </div>
+            <div class="guide-card">
+              <h4>Regula importanta</h4>
+              <p>Daca vrei ca tipul nou sa arate exact ca in structura ta, `question type` trebuie sa aiba acelasi `layoutId` si acelasi `slideType` cu layoutul creat.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-nav">
+          <button type="button" class="tab-btn active" data-tab="media">Biblioteca media</button>
+          <button type="button" class="tab-btn" data-tab="theme">Theme</button>
+          <button type="button" class="tab-btn" data-tab="layout">Layout si grila</button>
+          <button type="button" class="tab-btn" data-tab="question">Quizz</button>
+        </div>
+
+        <div class="tab-pane active" data-tab-pane="media">
+          <div class="step">
+            <div class="step-head"><div class="step-index">1</div><h2>Biblioteca De Imagini si Audio</h2></div>
+            <p class="hint">Aici iti formezi biblioteca de resurse. Poti urca fisiere pe server, poti sterge, poti lua linkul si poti trimite resursa direct in theme sau in biblioteca quizului.</p>
+            <div class="mini-guide">
+              <strong>Ce faci exact in acest tab</strong>
+              <ol>
+                <li>Apesi `Creeaza foldere necesare` o singura data.</li>
+                <li>Incarci imagini sau audio pe server.</li>
+                <li>Verifici jos lista de fisiere salvate pe server.</li>
+                <li>Mai tarziu, in popup-urile din `Theme` si `Question type`, alegi din aceasta biblioteca.</li>
+              </ol>
+            </div>
+            <div class="media-manager">
+              <h3>Flux simplu pentru biblioteca media</h3>
+              <p class="hint">Totul pleaca din popup: alegi imagine sau audio, apoi ori pui link extern, ori incarci fisierul in zona cu border intrerupt. Dupa salvare, elementele apar mai jos in biblioteca.</p>
+              <div class="media-toolbar">
+                <button type="button" id="open-media-library-manager">Adauga media / audio</button>
+                <button type="button" id="ensure-upload-dirs-top" class="secondary">Creeaza foldere necesare</button>
+                <button type="button" id="refresh-all-assets" class="secondary">Actualizeaza biblioteca</button>
+              </div>
+            </div>
+            <div class="media-manager">
+              <h3>Scanare cu Apify</h3>
+              <p class="hint">Pui tokenul Apify, alegi daca vrei imagini sau audio si scanezi un dataset ori un endpoint JSON. Elementele gasite se adauga in biblioteca builderului ca linkuri externe.</p>
+              <div class="row">
+                <div class="field">
+                  <label for="apify-token">Apify API token</label>
+                  <input id="apify-token" placeholder="apify_api_xxx">
+                </div>
+                <div class="field">
+                  <label for="apify-asset-type">Tip import</label>
+                  <select id="apify-asset-type">
+                    <option value="image">imagini</option>
+                    <option value="audio">audio</option>
+                  </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="field">
+                  <label for="apify-dataset-id">Dataset ID</label>
+                  <input id="apify-dataset-id" placeholder="datasetId optional">
+                </div>
+                <div class="field">
+                  <label for="apify-api-url">URL API / dataset</label>
+                  <input id="apify-api-url" placeholder="https://api.apify.com/v2/datasets/.../items?clean=true">
+                </div>
+              </div>
+              <div class="media-toolbar">
+                <button type="button" id="apify-scan-button" class="secondary">API scanare</button>
+              </div>
+            </div>
+            <div class="media-split legacy-media-box">
+              <div class="media-box">
+                <h3>1. Incarca fisiere pe server</h3>
+                <p>Alegi un fisier sau mai multe, le incarci si ele apar mai jos in lista de fisiere salvate pe server.</p>
+                <div class="field">
+                  <label>Upload imagini pe server</label>
+                  <div class="asset-actions">
+                    <button type="button" id="ensure-upload-dirs" class="secondary">Creeaza foldere necesare</button>
+                    <input id="theme-image-files" type="file" accept="image/*" multiple>
+                    <button type="button" id="upload-theme-images" class="secondary">Incarca imagini pe server</button>
+                    <button type="button" id="refresh-theme-assets" class="secondary">Actualizeaza biblioteca server</button>
+                  </div>
+                </div>
+                <div class="field">
+                  <label>Upload audio pe server</label>
+                  <div class="asset-actions">
+                    <input id="audio-files" type="file" accept="audio/*" multiple>
+                    <button type="button" id="upload-audio-files" class="secondary">Incarca audio pe server</button>
+                    <button type="button" id="refresh-audio-assets" class="secondary">Actualizeaza biblioteca server</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="media-box">
+                <h3>2. Adauga link extern</h3>
+                <p>Daca nu vrei upload, pui direct linkul. Dupa salvare, imaginea sau audio apare in biblioteca de jos si il poti sterge daca nu mai trebuie.</p>
+                <div class="row">
+                  <div class="field">
+                    <label for="quick-image-id">ID imagine din link</label>
+                    <input id="quick-image-id" placeholder="theme_img_custom">
+                  </div>
+                  <div class="field">
+                    <label for="quick-image-name">Nume imagine</label>
+                    <input id="quick-image-name" placeholder="Nume imagine">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label for="quick-image-url">Link imagine</label>
+                    <input id="quick-image-url" placeholder="https://...">
+                  </div>
+                  <div class="field">
+                    <label>&nbsp;</label>
+                    <button type="button" id="add-quick-image" class="secondary">Salveaza link imagine</button>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label for="quick-audio-id">ID audio din link</label>
+                    <input id="quick-audio-id" placeholder="music_custom">
+                  </div>
+                  <div class="field">
+                    <label for="quick-audio-name">Nume audio</label>
+                    <input id="quick-audio-name" placeholder="Nume audio">
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="field">
+                    <label for="quick-audio-url">Link audio</label>
+                    <input id="quick-audio-url" placeholder="https://...">
+                  </div>
+                  <div class="field">
+                    <label for="quick-audio-category">Categorie</label>
+                    <select id="quick-audio-category">
+                      <option value="music">music</option>
+                      <option value="correct">correct</option>
+                      <option value="wrong">wrong</option>
+                      <option value="gongStart">gongStart</option>
+                      <option value="gongEnd">gongEnd</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="btn-row">
+                  <button type="button" id="add-quick-audio" class="secondary">Salveaza link audio</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="field">
+              <label>Imagini incarcate pe server</label>
+              <div class="asset-actions">
+                <div class="small">Aici vezi exact ce a intrat prin upload. Pentru fiecare element apare separat `Public URL` si `Server path`.</div>
+              </div>
+              <div id="server-image-library" class="asset-grid"></div>
+            </div>
+            <div class="field">
+              <label>Audio incarcat pe server</label>
+              <div class="small">Aici vezi fisierele audio urcate pe server. `Public URL` este linkul din browser, iar `Server path` este calea reala de pe server.</div>
+              <div id="server-audio-library" class="asset-grid"></div>
+            </div>
+            <div class="field">
+              <label>Imagini externe salvate in biblioteca builderului</label>
+              <div class="small">Aici apar linkurile externe pe care le-ai adaugat. Le poti folosi ca background sau le poti sterge din builder.</div>
+              <div id="manual-image-library" class="asset-grid"></div>
+            </div>
+            <div class="field">
+              <label>Audio extern salvat in biblioteca builderului</label>
+              <div class="small">Aici apar linkurile audio externe pe care le-ai adaugat manual.</div>
+              <div id="manual-audio-library" class="asset-grid"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane" data-tab-pane="layout">
+
+        <div class="step" id="layout-identity-step">
+          <div class="step-head"><div class="step-index">1</div><h2>Layouturi Create</h2></div>
+          <p class="hint">Aici vezi layouturile deja create sub forma de cartele. Poti edita, sterge local sau crea unul nou cu `+`.</p>
+          <div class="cards-toolbar">
+            <strong>Biblioteca layouturi</strong>
+            <button type="button" id="refresh-layout-cards" class="secondary">Actualizeaza layouturi</button>
+          </div>
+          <div id="layout-cards-grid" class="cards-grid"></div>
+        </div>
+        <div class="section-divider"></div>
+
+        <div class="step" id="layout-structure-step">
+          <div class="step-head"><div class="step-index">1</div><h2>Identitate Layout</h2></div>
+          <p class="hint">Aici spui ce tip de quiz construiesti si cum se numeste in diferite limbi.</p>
+          <div class="mini-guide">
+            <strong>Ce faci aici</strong>
+            <p>Pui numele intern al structurii si alegi daca structura este pentru `quiz` sau pentru `media`. Tot ce definesti mai jos va fi salvat ca layout reutilizabil.</p>
+          </div>
+          <div class="row">
+            <div class="field" style="display:none;">
+              <label for="layout-id">Layout ID</label>
+              <input id="layout-id" value="quiz_classic_builder">
+            </div>
+            <div class="field">
+              <label for="slide-type">Tip slide</label>
+              <select id="slide-type">
+                <option value="quiz">quiz</option>
+                <option value="media">media</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label>Denumiri pe limbi</label>
+            <div id="label-items" class="mini-card-list"></div>
+            <div class="btn-row">
+              <button type="button" id="add-label">Adauga Limba</button>
+            </div>
+          </div>
+          <div class="field">
+            <label>Alege structura vizuala de baza</label>
+            <div class="small">Selectezi o structura ca in exemplul tau, apoi in pasii urmatori poti scoate sau adauga blocuri in interior.</div>
+            <div class="structure-picker">
+              <div>
+                <div class="structure-group-title">Media</div>
+                <div class="structure-grid" id="structure-media-grid">
+                  <button type="button" class="structure-card" data-structure-preset="media_classic">
+                    <div class="structure-thumb">
+                      <div class="thumb-block thumb-title"></div>
+                      <div class="thumb-block thumb-media">◦</div>
+                      <div class="thumb-block thumb-text"></div>
+                    </div>
+                    <label>Classic</label>
+                  </button>
+                  <button type="button" class="structure-card" data-structure-preset="media_big_title">
+                    <div class="structure-thumb split">
+                      <div class="thumb-stack">
+                        <div class="thumb-block thumb-title big"></div>
+                        <div class="thumb-block thumb-text short"></div>
+                      </div>
+                      <div class="thumb-block thumb-media">◦</div>
+                    </div>
+                    <label>Big title</label>
+                  </button>
+                  <button type="button" class="structure-card" data-structure-preset="media_title_text">
+                    <div class="structure-thumb split">
+                      <div class="thumb-stack">
+                        <div class="thumb-block thumb-title"></div>
+                        <div class="thumb-block" style="height:40px;"></div>
+                      </div>
+                      <div class="thumb-block thumb-media">◦</div>
+                    </div>
+                    <label>Title and text</label>
+                  </button>
+                  <button type="button" class="structure-card" data-structure-preset="media_bullets">
+                    <div class="structure-thumb split">
+                      <div class="thumb-stack">
+                        <div class="thumb-block thumb-title"></div>
+                        <div class="thumb-line"></div>
+                        <div class="thumb-line short"></div>
+                        <div class="thumb-line"></div>
+                      </div>
+                      <div class="thumb-block thumb-media">◦</div>
+                    </div>
+                    <label>Bullet points</label>
+                  </button>
+                  <button type="button" class="structure-card" data-structure-preset="media_quote">
+                    <div class="structure-thumb">
+                      <div class="thumb-block" style="width:42px;height:42px;border-radius:50%;justify-self:center;background:#727272;color:#fff;display:grid;place-items:center;">◦</div>
+                      <div class="thumb-block thumb-title"></div>
+                      <div class="thumb-block thumb-text small"></div>
+                    </div>
+                    <label>Quote</label>
+                  </button>
+                  <button type="button" class="structure-card" data-structure-preset="media_big_media">
+                    <div class="structure-thumb">
+                      <div class="thumb-block thumb-media" style="min-height:86px;">◦</div>
+                    </div>
+                    <label>Big media</label>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <div class="structure-group-title">Text</div>
+                <div class="structure-grid" id="structure-text-grid">
+                  <button type="button" class="structure-card" data-structure-preset="text_big_title">
+                    <div class="structure-thumb">
+                      <div class="thumb-block thumb-title big"></div>
+                      <div class="thumb-block thumb-text"></div>
+                    </div>
+                    <label>Big title</label>
+                  </button>
+                  <button type="button" class="structure-card" data-structure-preset="text_title_text">
+                    <div class="structure-thumb">
+                      <div class="thumb-block thumb-title"></div>
+                      <div class="thumb-block" style="height:58px;"></div>
+                    </div>
+                    <label>Title and text</label>
+                  </button>
+                  <button type="button" class="structure-card" data-structure-preset="text_quote">
+                    <div class="structure-thumb">
+                      <div class="thumb-block thumb-title"></div>
+                      <div class="thumb-block thumb-text small"></div>
+                    </div>
+                    <label>Quote</label>
+                  </button>
+                  <button type="button" class="structure-card" data-structure-preset="text_bullets">
+                    <div class="structure-thumb">
+                      <div class="thumb-block thumb-title"></div>
+                      <div class="thumb-line"></div>
+                      <div class="thumb-line short"></div>
+                      <div class="thumb-line"></div>
+                    </div>
+                    <label>Bullet points</label>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <input id="structure-preset-id" type="hidden" value="media_quote">
+          </div>
+        </div>
+
+        <div class="step" id="layout-answers-step">
+          <div class="step-head"><div class="step-index">2</div><h2>Structura Canvas</h2></div>
+          <p class="hint">Alegi ce blocuri apar si cum se aseaza. Practic aici decizi daca vrei titlu sus, doar titlu si imagine, sau titlu + descriere + blocuri in dreapta.</p>
+          <div class="mini-guide">
+            <strong>Regula simpla</strong>
+            <ol>
+              <li>Daca vrei intrebare cu raspunsuri, tine `answers` activ.</li>
+              <li>Daca vrei slide informational, foloseste `description` in loc de `answers`.</li>
+              <li>Daca vrei imagine stanga si raspunsuri dreapta, foloseste `split media + answers`.</li>
+            </ol>
+          </div>
+          <div class="field">
+            <label>Blocuri active</label>
+            <div class="chips" id="structure-checks">
+              <label class="chip"><input type="checkbox" value="title" checked> title</label>
+              <label class="chip"><input type="checkbox" value="media" checked> media</label>
+              <label class="chip"><input type="checkbox" value="answers" checked> answers</label>
+              <label class="chip"><input type="checkbox" value="description"> description</label>
+              <label class="chip"><input type="checkbox" value="meta" checked> meta</label>
+              <label class="chip"><input type="checkbox" value="split_media_answers"> split media + answers</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="layout-mode">Aranjare blocuri</label>
+              <select id="layout-mode">
+                <option value="stack">stack vertical</option>
+                <option value="split">split stanga-dreapta</option>
+                <option value="grid">grid</option>
+                <option value="flex">flex liber</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="title-align">Pozitie titlu</label>
+              <select id="title-align">
+                <option value="center">center</option>
+                <option value="left">left</option>
+                <option value="right">right</option>
+              </select>
+            </div>
+          </div>
+          <div class="row-3">
+            <div class="field">
+              <label for="title-width">Latime titlu</label>
+              <input id="title-width" value="min(820px, 95%)">
+            </div>
+            <div class="field">
+              <label for="media-width">Latime media</label>
+              <input id="media-width" value="min(720px, 90%)">
+            </div>
+            <div class="field">
+              <label for="media-ratio">Aspect media</label>
+              <input id="media-ratio" value="16/9">
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="media-position">Pozitie media</label>
+              <select id="media-position">
+                <option value="top_large">sus mare</option>
+                <option value="top_medium">sus medie</option>
+                <option value="left_panel">stanga</option>
+                <option value="right_panel">dreapta</option>
+                <option value="hidden">ascunsa</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="description-position">Pozitie descriere</label>
+              <select id="description-position">
+                <option value="below_title">sub titlu</option>
+                <option value="below_media">sub media</option>
+                <option value="right_panel">in dreapta</option>
+                <option value="left_panel">in stanga</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="layout-custom-step">
+          <div class="step-head"><div class="step-index">3</div><h2>Raspunsuri si Imagine Fragmentata</h2></div>
+          <p class="hint">Aici alegi cate raspunsuri ai, daca raspunsurile merg pe 2 coloane sau 1 coloana si daca imaginea poate fi folosita ca puzzle 2x2 sau 4x4.</p>
+          <div class="mini-guide">
+            <strong>Ce salvezi aici</strong>
+            <p>Aici definesti cum arata blocurile de raspuns si daca imaginea principala poate fi folosita ca puzzle sau fundal pentru raspunsuri.</p>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="answer-layout">Tip aranjare raspunsuri</label>
+              <select id="answer-layout">
+                <option value="grid_2_columns">grid 2 coloane</option>
+                <option value="vertical_stack">vertical</option>
+                <option value="grid_1_column_large">1 coloana mare</option>
+                <option value="grid_3_columns">3 coloane</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="answer-count-default">Numar raspunsuri default</label>
+              <select id="answer-count-default">
+                <option value="2">2</option>
+                <option value="4" selected>4</option>
+                <option value="6">6</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label>Numar raspunsuri permis</label>
+            <div class="chips" id="supports-checks">
+              <label class="chip"><input class="supports-answer" type="checkbox" value="2" checked> 2</label>
+              <label class="chip"><input class="supports-answer" type="checkbox" value="4" checked> 4</label>
+              <label class="chip"><input class="supports-answer" type="checkbox" value="6"> 6</label>
+            </div>
+          </div>
+          <div class="row-3">
+            <div class="field">
+              <label for="answer-gap">Gap raspunsuri</label>
+              <input id="answer-gap" type="number" value="18">
+            </div>
+            <div class="field">
+              <label for="answer-min-height">Inaltime minima</label>
+              <input id="answer-min-height" type="number" value="84">
+            </div>
+            <div class="field">
+              <label for="answer-radius">Rotunjire</label>
+              <input id="answer-radius" type="number" value="22">
+            </div>
+          </div>
+          <div class="row-3">
+            <div class="field">
+              <label for="answer-font-size">Marime text</label>
+              <input id="answer-font-size" type="number" value="18">
+            </div>
+            <div class="field">
+              <label for="answer-image-width">Latime imagine raspuns</label>
+              <input id="answer-image-width" type="number" value="140">
+            </div>
+            <div class="field">
+              <label for="answers-width">Latime zona raspunsuri</label>
+              <input id="answers-width" value="min(900px, 95%)">
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="image-slice-mode">Impartire imagine</label>
+              <select id="image-slice-mode">
+                <option value="none">fara impartire</option>
+                <option value="2x2">2x2</option>
+                <option value="4x4">4x4</option>
+                <option value="6x6">6x6</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="chip"><input id="use-main-image-bg" type="checkbox"> foloseste imaginea principala pe raspunsuri</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="step" id="quiz-cards-step">
+          <div class="step-head"><div class="step-index">4</div><h2>Constructor Blocuri Custom</h2></div>
+          <p class="hint">Aici construiesti propria structura HTML. Poti alege `div`, `h1`, `p`, `input`, `button`, `img`, ordinea, rolul si modul de afisare `block`, `flex` sau `grid`.</p>
+          <div class="mini-guide">
+            <strong>Regula simpla</strong>
+            <ol>
+              <li>Fiecare rand este un bloc nou din sablonul tau.</li>
+              <li>Rolul iti spune la ce foloseste acel bloc in quiz sau media.</li>
+              <li>Ordinea si zona te ajuta sa-l asezi cum vrei in structura.</li>
+            </ol>
+          </div>
+          <div id="custom-block-library" class="custom-block-grid"></div>
+          <div class="btn-row">
+            <button type="button" id="add-custom-block">Adauga bloc</button>
+          </div>
+          <div class="tiny-note">Aceste blocuri se salveaza in layout, separat de continutul media si separat de regulile de joc ale quizzului.</div>
+        </div>
+
+        </div>
+
+        <div class="tab-pane" data-tab-pane="theme">
+        <div class="step" id="quiz-main-step">
+          <div class="step-head"><div class="step-index">4</div><h2>Teme Create</h2></div>
+          <p class="hint">Aici vezi toate temele existente sub forma de cartele. Poti edita, sterge local sau crea una noua cu `+`.</p>
+          <div class="cards-toolbar">
+            <strong>Biblioteca de teme</strong>
+            <button type="button" id="refresh-theme-cards" class="secondary">Actualizeaza teme</button>
+          </div>
+          <div id="theme-cards-grid" class="cards-grid"></div>
+        </div>
+        <div class="section-divider"></div>
+        <div class="step">
+          <div class="step-head"><div class="step-index">4</div><h2>Theme, Culori si Biblioteca de Imagini</h2></div>
+          <p class="hint">Aici construiesti tema: culori, imagine de fundal, overlay si biblioteca de imagini pe care o vei folosi mai departe in proiect.</p>
+          <div class="notice-box">Versiunea noua: fundalul, iconul si audio se pot alege din popup-ul bibliotecii, nu doar prin link manual.</div>
+          <div class="mini-guide">
+            <strong>Ce faci aici</strong>
+            <ol>
+              <li>Alegi fundalul principal al temei din popup sau din link.</li>
+              <li>Alegi culorile de baza si gradientul.</li>
+              <li>Adaugi imaginile care apartin acestei teme in biblioteca ei.</li>
+            </ol>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="theme-id">Theme ID</label>
+              <input id="theme-id" value="theme_classic_blue">
+            </div>
+            <div class="field">
+              <label for="theme-name">Theme name</label>
+              <input id="theme-name" value="Classic Blue">
+            </div>
+          </div>
+          <div class="field">
+            <label for="theme-description">Descriere theme</label>
+            <input id="theme-description" value="Corporate, clar, modern">
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="theme-bg-url">Imagine principala theme</label>
+              <input id="theme-bg-url" value="https://images.unsplash.com/photo-1557683316-973673baf926?q=80&w=1200">
+              <div class="btn-row">
+                <button type="button" id="pick-theme-bg" class="secondary">Alege imagine din biblioteca</button>
+              </div>
+            </div>
+            <div class="field">
+              <label for="theme-overlay">Overlay</label>
+              <input id="theme-overlay" value="linear-gradient(180deg, rgba(7,25,43,0.18), rgba(7,25,43,0.38))">
+              <div class="btn-row">
+                <button type="button" id="pick-gradient" class="secondary">Alege / creeaza gradient</button>
+              </div>
+            </div>
+          </div>
+          <div class="row-3">
+            <div class="field">
+              <label for="color-accent">Accent</label>
+              <input id="color-accent" type="color" value="#2e85c7">
+              <div class="btn-row"><button type="button" class="secondary pick-color-btn" data-target="color-accent">Paleta / culoare noua</button></div>
+            </div>
+            <div class="field">
+              <label for="color-accent-strong">Accent strong</label>
+              <input id="color-accent-strong" type="color" value="#0a5084">
+              <div class="btn-row"><button type="button" class="secondary pick-color-btn" data-target="color-accent-strong">Paleta / culoare noua</button></div>
+            </div>
+            <div class="field">
+              <label for="color-title">Title color</label>
+              <input id="color-title" type="color" value="#0a5084">
+              <div class="btn-row"><button type="button" class="secondary pick-color-btn" data-target="color-title">Paleta / culoare noua</button></div>
+            </div>
+          </div>
+          <div class="row-3">
+            <div class="field">
+              <label for="title-surface">Title surface</label>
+              <input id="title-surface" value="rgba(255,255,255,0.96)">
+              <div class="btn-row"><button type="button" class="secondary pick-color-btn" data-target="title-surface">Paleta / culoare noua</button></div>
+            </div>
+            <div class="field">
+              <label for="surface-color">Surface</label>
+              <input id="surface-color" value="rgba(255,255,255,0.94)">
+              <div class="btn-row"><button type="button" class="secondary pick-color-btn" data-target="surface-color">Paleta / culoare noua</button></div>
+            </div>
+            <div class="field">
+              <label for="border-color">Border media</label>
+              <input id="border-color" type="color" value="#ff9f43">
+              <div class="btn-row"><button type="button" class="secondary pick-color-btn" data-target="border-color">Paleta / culoare noua</button></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="border-width">Border width</label>
+              <input id="border-width" type="number" value="4">
+            </div>
+            <div class="field">
+              <label for="theme-answer-radius">Answer radius theme</label>
+              <input id="theme-answer-radius" type="number" value="22">
+            </div>
+          </div>
+          <div class="field">
+            <label>Biblioteca de imagini pentru theme</label>
+            <div id="theme-image-library" class="mini-card-list"></div>
+            <div class="btn-row">
+              <button type="button" id="add-theme-image">Adauga Imagine</button>
+              <button type="button" id="pick-theme-library-image" class="secondary">Alege imagine din biblioteca</button>
+            </div>
+            <div class="small">Aici apar imaginile folosite in tema. Le poti adauga manual sau le poti lua din tabul `Biblioteca media`.</div>
+          </div>
+        </div>
+
+        </div>
+
+        <div class="tab-pane" data-tab-pane="question">
+        <div class="step">
+          <div class="step-head"><div class="step-index">5</div><h2>Quizzuri Create</h2></div>
+          <p class="hint">Aici vezi quizurile sau question types create sub forma de cartele. `+` deschide formularul pentru unul nou, iar `Edit` incarca si layoutul lui.</p>
+          <div class="cards-toolbar">
+            <strong>Biblioteca quizuri</strong>
+            <button type="button" id="refresh-question-cards" class="secondary">Actualizeaza quizzuri</button>
+          </div>
+          <div id="question-cards-grid" class="cards-grid"></div>
+        </div>
+        <div class="section-divider"></div>
+        <div class="step">
+          <div class="step-head"><div class="step-index">5</div><h2>Bonus, Timp si Sunete</h2></div>
+          <p class="hint">Configurezi logica intrebarii: timp, bonus, puncte, raspunsuri multiple si biblioteca de sunete.</p>
+          <div class="mini-guide">
+            <strong>Ce faci aici</strong>
+            <p>Aici definesti comportamentul tipului de intrebare: timer, puncte, bonus de viteza si biblioteca audio pe care acel tip o poate folosi.</p>
+          </div>
+          <div class="row-3">
+            <div class="field">
+              <label for="timer-value">Timer default</label>
+              <select id="timer-value">
+                <option value="5s">5s</option>
+                <option value="10s">10s</option>
+                <option value="20s" selected>20s</option>
+                <option value="30s">30s</option>
+                <option value="60s">60s</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="base-points">Base points</label>
+              <input id="base-points" type="number" value="1000">
+            </div>
+            <div class="field">
+              <label for="bonus-seconds">Bonus in secunde</label>
+              <input id="bonus-seconds" type="number" value="10">
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label class="chip"><input id="bonus-enabled" type="checkbox" checked> bonus de viteza activ</label>
+            </div>
+            <div class="field">
+              <label class="chip"><input id="allow-multiple" type="checkbox"> permite raspunsuri multiple</label>
+            </div>
+          </div>
+          <div class="field">
+            <label>Biblioteca de sunete</label>
+            <div id="audio-library" class="mini-card-list"></div>
+            <div class="btn-row">
+              <button type="button" id="add-audio-item">Adauga Sunet</button>
+              <button type="button" id="pick-audio-library" class="secondary">Alege audio din biblioteca</button>
+            </div>
+            <div class="small">Poti completa manual sau poti folosi fisierele deja incarcate in tabul `Biblioteca media`.</div>
+          </div>
+        </div>
+
+        <div class="step" id="question-logic-step">
+          <div class="step-head"><div class="step-index">6</div><h2>Question Type / Logica Quizului</h2></div>
+          <p class="hint">Aici definesti doar logica quizului: nume, descriere, icon, limba, timer, puncte, bonus, raspunsuri multiple si audio. Layoutul si theme-ul se aleg separat mai jos.</p>
+          <div class="mini-guide">
+            <strong>Separarea corecta</strong>
+            <p>In acest pas construiesti doar tipul de quiz. Structura blocurilor ramane in tabul <strong>Layout si grila</strong>, iar alegerea theme-ului si a layoutului pentru quiz se face in pasul de binding.</p>
+          </div>
+          <input id="question-type-id" type="hidden" value="quiz-custom">
+          <input id="question-type-layout-id" type="hidden" value="quiz_classic_builder">
+          <div class="row">
+            <div class="field">
+              <label for="question-type-name">Nume quizz</label>
+              <input id="question-type-name" value="Quiz Custom">
+            </div>
+            <div class="field">
+              <label for="quiz-language">Limba principala</label>
+              <input id="quiz-language" value="ro">
+            </div>
+          </div>
+          <div class="field">
+            <label for="question-type-desc">Descriere</label>
+            <input id="question-type-desc" value="Tip de quiz configurabil din wizard">
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="question-type-icon">Icon URL</label>
+              <input id="question-type-icon" value="https://quizdigo.com/quizigo/11.png">
+              <div class="btn-row">
+                <button type="button" id="pick-question-icon" class="secondary">Alege icon din biblioteca</button>
+              </div>
+            </div>
+            <div class="field">
+              <label>&nbsp;</label>
+              <div class="mini-guide" style="margin:0;">
+                <strong>Pas urmator</strong>
+                <p>Dupa ce setezi datele logice ale quizzului, mergi in tabul <strong>Layout si grila</strong> sau alege mai jos layoutul final.</p>
+                <div class="btn-row">
+                  <button type="button" id="start-structure-builder" class="good">Mergi la Layout Builder</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="api-box">
+            <strong>API folosit pentru biblioteca server</strong>
+            <ul>
+              <li>`config-builder-api.php?action=ensure_upload_dirs` creeaza folderele de upload</li>
+              <li>`config-builder-api.php?action=upload_assets&type=image|audio` incarca fisierele</li>
+              <li>`config-builder-api.php?action=list_assets&type=image|audio` citeste biblioteca existenta</li>
+              <li>`config-builder-api.php?action=delete_asset` sterge din server</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="step" id="question-binding-step">
+          <div class="step-head"><div class="step-index">7</div><h2>Binding Quiz + Layout + Theme</h2></div>
+          <p class="hint">Aici legi quizul creat cu structura vizuala si cu theme-ul. Este separat de logica quizului, exact ca sa nu se amestece intre ele.</p>
+          <div class="mini-guide">
+            <strong>Flux clar</strong>
+            <ol>
+              <li>Alegi tipul de quiz: quiz, media sau custom.</li>
+              <li>Alegi layoutul deja construit in tabul Layout si grila.</li>
+              <li>Alegi theme-ul care stilizeaza quizul.</li>
+            </ol>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="question-type-slide-type">Tip quizz</label>
+              <select id="question-type-slide-type">
+                <option value="quiz">quizz</option>
+                <option value="media">media</option>
+                <option value="custom">custom</option>
+              </select>
+            </div>
+            <div class="field">
+              <label for="question-type-layout-select">Layout ales</label>
+              <select id="question-type-layout-select"></select>
+              <div class="small">Aici alegi structura blocurilor pe care ai construit-o separat in tabul `Layout si grila`.</div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="quiz-theme-select">Theme aleasa</label>
+              <select id="quiz-theme-select"></select>
+            </div>
+            <div class="field">
+              <label for="question-binding-preview">Rezumat binding</label>
+              <input id="question-binding-preview" value="quiz -> layout -> theme" readonly>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <div class="btn-row">
+          <button id="generate-all" type="button">Genereaza Configuratia</button>
+          <button id="save-all" type="button" class="good">Salveaza in proiect</button>
+          <button id="reset-local" type="button" class="secondary">Reset local</button>
+          <button id="reset-builder-all" type="button" class="secondary">Reset complet builder</button>
+          <button id="clear-uploads" type="button" class="secondary">Curata uploads</button>
+          <button id="reset-demo" type="button" class="secondary">Reset</button>
+        </div>
+        <div id="save-status" class="status-banner info">Pagina este pregatita pentru upload si save.</div>
+      </div>
+
+      <div class="side">
+        <div class="preview-card">
+          <div class="card-head">
+            <h3>Preview Canvas</h3>
+            <p>Preview rapid pentru cum arata structura aleasa. Este doar orientativ, dar te ajuta sa vezi daca titlul, media si raspunsurile sunt in pozitia corecta.</p>
+          </div>
+          <div class="card-body">
+            <div id="canvas-preview" class="canvas-demo"></div>
+          </div>
+        </div>
+
+        <div class="preview-card">
+          <div class="card-head">
+            <h3>Rezumat Ce Construiesti</h3>
+            <p>Pe scurt vezi toate alegerile importante, ca sa nu te pierzi in configuratie.</p>
+          </div>
+          <div class="card-body">
+            <div id="summary-list" class="summary-list"></div>
+          </div>
+        </div>
+
+        <div class="result-card">
+          <div class="card-head">
+            <h3>builder-layouts.json</h3>
+            <p>Acest bloc il adaugi in <code>layoutRegistry</code> si in variantele asociate.</p>
+          </div>
+          <div class="card-body">
+            <textarea id="layout-output" readonly></textarea>
+            <div class="btn-row">
+              <button type="button" class="secondary" data-copy="layout-output">Copiaza</button>
+              <button type="button" class="good" data-download="layout-output" data-file="builder-layouts-snippet.json">Descarca</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-card">
+          <div class="card-head">
+            <h3>builder-themes.json</h3>
+            <p>Acest bloc il adaugi in lista de teme si in biblioteca de imagini pentru theme.</p>
+          </div>
+          <div class="card-body">
+            <textarea id="theme-output" readonly></textarea>
+            <div class="btn-row">
+              <button type="button" class="secondary" data-copy="theme-output">Copiaza</button>
+              <button type="button" class="good" data-download="theme-output" data-file="builder-theme-snippet.json">Descarca</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="result-card">
+          <div class="card-head">
+            <h3>builder-audio.json si question-types.json</h3>
+            <p>Aici ai biblioteca de sunete si tipul nou de intrebare.</p>
+          </div>
+          <div class="card-body">
+            <textarea id="question-type-output" readonly></textarea>
+            <div class="btn-row">
+              <button type="button" class="secondary" data-copy="question-type-output">Copiaza</button>
+              <button type="button" class="good" data-download="question-type-output" data-file="question-type-snippet.json">Descarca</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <template id="label-row-template">
+    <div class="mini-card label-row">
+      <div class="mini-card-head">
+        <div class="mini-card-title">Denumire pe limba</div>
+        <button type="button" class="link remove-item">Sterge</button>
+      </div>
+      <div class="row">
+        <div>
+          <label>Cod limba</label>
+          <input class="lang-code" placeholder="ro">
+        </div>
+        <div>
+          <label>Text</label>
+          <input class="lang-value" placeholder="Quiz clasic">
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="theme-image-template">
+    <div class="mini-card image-row">
+      <div class="mini-card-head">
+        <div class="mini-card-title">Imagine biblioteca theme</div>
+        <button type="button" class="link remove-item">Sterge</button>
+      </div>
+      <div class="row">
+        <div>
+          <label>ID imagine</label>
+          <input class="image-id" placeholder="theme_img_01">
+        </div>
+        <div>
+          <label>Nume imagine</label>
+          <input class="image-name" placeholder="Sky Blue">
+        </div>
+      </div>
+      <div class="field">
+        <label>URL imagine</label>
+        <input class="image-url" placeholder="https://...">
+        <div class="btn-row">
+          <button type="button" class="secondary pick-row-image-btn">Alege imagine din biblioteca</button>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="audio-item-template">
+    <div class="mini-card audio-row">
+      <div class="mini-card-head">
+        <div class="mini-card-title">Sunet biblioteca</div>
+        <button type="button" class="link remove-item">Sterge</button>
+      </div>
+      <div class="row">
+        <div>
+          <label>ID sunet</label>
+          <input class="audio-id" placeholder="music_01">
+        </div>
+        <div>
+          <label>Nume sunet</label>
+          <input class="audio-name" placeholder="Quiz Beat">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label>Categorie</label>
+          <select class="audio-category">
+            <option value="music">music</option>
+            <option value="correct">correct</option>
+            <option value="wrong">wrong</option>
+            <option value="gongStart">gongStart</option>
+            <option value="gongEnd">gongEnd</option>
+          </select>
+        </div>
+        <div>
+          <label>URL sunet</label>
+          <input class="audio-url" placeholder="https://...">
+          <div class="btn-row">
+            <button type="button" class="secondary pick-row-audio-btn">Alege audio din biblioteca</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+  <template id="custom-block-template">
+    <div class="mini-card custom-block-row">
+      <div class="mini-card-head">
+        <div class="mini-card-title">Bloc custom</div>
+        <button type="button" class="link remove-item">Sterge</button>
+      </div>
+      <div class="row-4">
+        <div>
+          <label>ID bloc</label>
+          <input class="block-id" placeholder="hero_title">
+        </div>
+        <div>
+          <label>Tag HTML</label>
+          <select class="block-tag">
+            <option value="div">div</option>
+            <option value="h1">h1</option>
+            <option value="h2">h2</option>
+            <option value="p">p</option>
+            <option value="input">input</option>
+            <option value="button">button</option>
+            <option value="img">img</option>
+          </select>
+        </div>
+        <div>
+          <label>Rol</label>
+          <select class="block-role">
+            <option value="custom">custom</option>
+            <option value="title">title</option>
+            <option value="media">media</option>
+            <option value="description">description</option>
+            <option value="answers">answers</option>
+            <option value="meta">meta</option>
+          </select>
+        </div>
+        <div>
+          <label>Display</label>
+          <select class="block-display">
+            <option value="block">block</option>
+            <option value="flex">flex</option>
+            <option value="grid">grid</option>
+          </select>
+        </div>
+      </div>
+      <div class="row-4">
+        <div>
+          <label>Ordine</label>
+          <input class="block-order" type="number" value="1">
+        </div>
+        <div>
+          <label>Zona / area</label>
+          <input class="block-area" placeholder="hero / answers">
+        </div>
+        <div>
+          <label>Latime</label>
+          <input class="block-width" placeholder="1fr / 50% / auto">
+        </div>
+        <div>
+          <label>Clasa CSS</label>
+          <input class="block-class" placeholder="quiz-card big">
+        </div>
+      </div>
+      <div class="field">
+        <label>Text / placeholder / continut</label>
+        <input class="block-content" placeholder="Titlu, text, placeholder, label...">
+      </div>
+    </div>
+  </template>
+
+  <div id="asset-picker-popup" class="popup-backdrop">
+    <div class="popup-card">
+      <div class="popup-head">
+        <div>
+          <h3 id="asset-picker-title">Alege asset</h3>
+          <p class="small">Alegi tipul de asset, apoi ori pui link extern, ori incarci fisierul in zona mare cu border intrerupt.</p>
+        </div>
+        <button type="button" id="close-asset-picker" class="secondary">Inchide</button>
+      </div>
+      <div class="media-split">
+        <div class="media-box">
+          <div class="type-switch">
+            <button type="button" id="popup-type-image" class="secondary active">Foto</button>
+            <button type="button" id="popup-type-audio" class="secondary">Audio</button>
+          </div>
+          <h3>Link extern sau upload</h3>
+          <div class="field">
+            <label for="popup-link-url">Link extern</label>
+            <input id="popup-link-url" placeholder="https://...">
+          </div>
+          <div class="row">
+            <div class="field">
+              <label for="popup-link-id">ID</label>
+              <input id="popup-link-id" placeholder="asset_custom">
+            </div>
+            <div class="field">
+              <label for="popup-link-name">Nume</label>
+              <input id="popup-link-name" placeholder="Nume asset">
+            </div>
+          </div>
+          <div class="btn-row">
+            <button type="button" id="popup-save-link" class="good">Salveaza link in biblioteca</button>
+          </div>
+          <div class="field">
+            <label for="popup-upload-files">Incarcare fisier</label>
+            <input id="popup-upload-files" class="hidden-input" type="file" multiple>
+            <label for="popup-upload-files" id="popup-dropzone" class="upload-dropzone">
+              <div>
+                <div class="dropzone-icon">+</div>
+                <strong id="popup-dropzone-title">Incarca imaginea</strong>
+                <div class="dropzone-meta" id="popup-dropzone-meta">Apasa aici sau trage fisierul in aceasta zona.</div>
+              </div>
+            </label>
+          </div>
+          <div class="btn-row">
+            <button type="button" id="popup-upload-button" class="secondary">Incarca fisierul in biblioteca</button>
+          </div>
+        </div>
+        <div class="media-box">
+          <h3>Biblioteca existenta</h3>
+          <div id="asset-picker-grid" class="popup-grid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="gradient-popup" class="popup-backdrop">
+    <div class="popup-card">
+      <div class="popup-head">
+        <div>
+          <h3>Biblioteca Gradient</h3>
+          <p class="small">Alegi un gradient salvat sau creezi unul nou si il salvezi in biblioteca locala a builderului.</p>
+        </div>
+        <button type="button" id="close-gradient-popup" class="secondary">Inchide</button>
+      </div>
+      <div class="media-split">
+        <div class="media-box">
+          <h3>Creeaza gradient nou</h3>
+          <div class="gradient-preview" id="gradient-preview-box"></div>
+          <div class="row-3">
+            <div class="field">
+              <label for="gradient-angle">Unghi</label>
+              <input id="gradient-angle" type="number" value="135">
+            </div>
+            <div class="field">
+              <label for="gradient-color-1">Culoare 1</label>
+              <input id="gradient-color-1" type="color" value="#0b4d90">
+            </div>
+            <div class="field">
+              <label for="gradient-color-2">Culoare 2</label>
+              <input id="gradient-color-2" type="color" value="#1b74d1">
+            </div>
+          </div>
+          <div class="field">
+            <label for="gradient-name">Nume gradient</label>
+            <input id="gradient-name" value="Blue Flow">
+          </div>
+          <div class="btn-row">
+            <button type="button" id="apply-gradient" class="secondary">Foloseste gradientul</button>
+            <button type="button" id="save-gradient" class="good">Salveaza in biblioteca</button>
+          </div>
+        </div>
+        <div class="media-box">
+          <h3>Gradiente salvate</h3>
+          <div id="gradient-library-grid" class="popup-grid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="color-popup" class="popup-backdrop">
+    <div class="popup-card">
+      <div class="popup-head">
+        <div>
+          <h3>Biblioteca Culori</h3>
+          <p class="small">Alegi o culoare existenta sau creezi una noua si o salvezi in paleta builderului.</p>
+        </div>
+        <button type="button" id="close-color-popup" class="secondary">Inchide</button>
+      </div>
+      <div class="media-split">
+        <div class="media-box">
+          <h3>Culoare noua</h3>
+          <div class="field">
+            <label for="color-popup-value">Culoare</label>
+            <input id="color-popup-value" type="color" value="#2e85c7">
+          </div>
+          <div class="field">
+            <label for="color-popup-name">Nume culoare</label>
+            <input id="color-popup-name" value="Accent Blue">
+          </div>
+          <div class="btn-row">
+            <button type="button" id="apply-popup-color" class="secondary">Foloseste culoarea</button>
+            <button type="button" id="save-popup-color" class="good">Salveaza in paleta</button>
+          </div>
+        </div>
+        <div class="media-box">
+          <h3>Paleta salvata</h3>
+          <div id="color-library-grid" class="popup-grid"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = './config-builder-api.php';
+    const GRADIENT_LIBRARY_KEY = 'quiz_builder_gradient_library';
+    const COLOR_LIBRARY_KEY = 'quiz_builder_color_library';
+    const STRUCTURE_PRESETS = {
+      media_classic: {
+        slideType: 'media',
+        structure: ['title', 'media', 'description'],
+        layoutMode: 'stack',
+        titleAlign: 'center',
+        mediaPosition: 'top_large',
+        descriptionPosition: 'below_media'
+      },
+      media_big_title: {
+        slideType: 'media',
+        structure: ['title', 'split_media_answers'],
+        layoutMode: 'split',
+        titleAlign: 'left',
+        mediaPosition: 'right_panel',
+        descriptionPosition: 'left_panel'
+      },
+      media_title_text: {
+        slideType: 'media',
+        structure: ['title', 'description', 'split_media_answers'],
+        layoutMode: 'split',
+        titleAlign: 'left',
+        mediaPosition: 'right_panel',
+        descriptionPosition: 'left_panel'
+      },
+      media_bullets: {
+        slideType: 'media',
+        structure: ['title', 'description', 'split_media_answers', 'meta'],
+        layoutMode: 'split',
+        titleAlign: 'left',
+        mediaPosition: 'right_panel',
+        descriptionPosition: 'left_panel'
+      },
+      media_quote: {
+        slideType: 'media',
+        structure: ['media', 'description'],
+        layoutMode: 'stack',
+        titleAlign: 'center',
+        mediaPosition: 'top_medium',
+        descriptionPosition: 'below_media'
+      },
+      media_big_media: {
+        slideType: 'media',
+        structure: ['media'],
+        layoutMode: 'stack',
+        titleAlign: 'center',
+        mediaPosition: 'top_large',
+        descriptionPosition: 'below_media'
+      },
+      text_big_title: {
+        slideType: 'media',
+        structure: ['title', 'description'],
+        layoutMode: 'stack',
+        titleAlign: 'center',
+        mediaPosition: 'hidden',
+        descriptionPosition: 'below_title'
+      },
+      text_title_text: {
+        slideType: 'media',
+        structure: ['title', 'description'],
+        layoutMode: 'stack',
+        titleAlign: 'center',
+        mediaPosition: 'hidden',
+        descriptionPosition: 'below_title'
+      },
+      text_quote: {
+        slideType: 'media',
+        structure: ['title', 'description'],
+        layoutMode: 'stack',
+        titleAlign: 'center',
+        mediaPosition: 'hidden',
+        descriptionPosition: 'below_title'
+      },
+      text_bullets: {
+        slideType: 'media',
+        structure: ['title', 'description', 'meta'],
+        layoutMode: 'stack',
+        titleAlign: 'center',
+        mediaPosition: 'hidden',
+        descriptionPosition: 'below_title'
+      }
+    };
+    const byId = (id) => document.getElementById(id);
+    let serverAssetState = { image: [], audio: [] };
+    let assetPickerMode = '';
+    let assetPickerType = 'image';
+    let assetPickerTarget = null;
+    let colorPickerTarget = '';
+    let themeCatalogState = [];
+    let questionTypeCatalogState = [];
+    let layoutRegistryState = [];
+    let titleVariantState = {};
+    let mediaVariantState = {};
+    let answersVariantState = {};
+
+    function escapeHtml(value) {
+      return String(value || '')
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#039;');
+    }
+
+    function toPrettyJson(value) {
+      return JSON.stringify(value, null, 2);
+    }
+
+    function getGradientCss() {
+      return `linear-gradient(${Number(byId('gradient-angle').value || 135)}deg, ${byId('gradient-color-1').value}, ${byId('gradient-color-2').value})`;
+    }
+
+    function getGradientLibrary() {
+      try {
+        const raw = localStorage.getItem(GRADIENT_LIBRARY_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveGradientLibrary(items) {
+      localStorage.setItem(GRADIENT_LIBRARY_KEY, JSON.stringify(items));
+    }
+
+    function getColorLibrary() {
+      try {
+        const raw = localStorage.getItem(COLOR_LIBRARY_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function saveColorLibrary(items) {
+      localStorage.setItem(COLOR_LIBRARY_KEY, JSON.stringify(items));
+    }
+
+    function safeId(value) {
+      return String(value || '')
+        .trim()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '_')
+        .replace(/^_+|_+$/g, '') || 'item';
+    }
+
+    function showStatus(message, type = 'info') {
+      const box = byId('save-status');
+      box.textContent = message;
+      box.className = `status-banner show ${type}`;
+    }
+
+    function openPopup(id) {
+      byId(id).classList.add('show');
+    }
+
+    function closePopup(id) {
+      byId(id).classList.remove('show');
+    }
+
+    async function fetchJson(url, options = {}) {
+      const method = (options.method || 'GET').toUpperCase();
+      const finalUrl = method === 'GET'
+        ? `${url}${url.includes('?') ? '&' : '?'}_ts=${Date.now()}`
+        : url;
+      const response = await fetch(finalUrl, method === 'GET' ? { ...options, cache: 'no-store' } : options);
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || data.success === false) {
+        const details = [];
+        if (data.message) {
+          details.push(data.message);
+        }
+        if (Array.isArray(data.errors) && data.errors.length) {
+          details.push(data.errors.join(' '));
+        }
+        throw new Error(details.join(' ') || `Cererea a esuat cu status ${response.status}.`);
+      }
+      return data;
+    }
+
+    function attachRemoveHandler(element) {
+      const removeButton = element.querySelector('.remove-item');
+      if (removeButton) {
+        removeButton.addEventListener('click', () => {
+          element.remove();
+          renderAll();
+        });
+      }
+    }
+
+    function addTemplateItem(templateId, targetId, fillFn = null) {
+      const template = byId(templateId);
+      const fragment = template.content.cloneNode(true);
+      const root = fragment.firstElementChild;
+      if (fillFn) {
+        fillFn(root);
+      }
+      attachRemoveHandler(root);
+      bindInputsWithin(root);
+      byId(targetId).appendChild(fragment);
+    }
+
+    function getLabels() {
+      const labels = {};
+      byId('label-items').querySelectorAll('.label-row').forEach((row) => {
+        const code = row.querySelector('.lang-code').value.trim();
+        const value = row.querySelector('.lang-value').value.trim();
+        if (code && value) {
+          labels[code] = value;
+        }
+      });
+      return labels;
+    }
+
+    function getCheckedValues(containerSelector) {
+      return Array.from(document.querySelectorAll(`${containerSelector} input[type="checkbox"]`))
+        .filter((input) => input.checked)
+        .map((input) => input.value);
+    }
+
+    function setCheckedValues(containerSelector, values) {
+      const allowed = new Set(values);
+      document.querySelectorAll(`${containerSelector} input[type="checkbox"]`).forEach((input) => {
+        input.checked = allowed.has(input.value);
+      });
+    }
+
+    function getThemeImages() {
+      return Array.from(byId('theme-image-library').querySelectorAll('.image-row')).map((row) => ({
+        id: row.querySelector('.image-id').value.trim(),
+        name: row.querySelector('.image-name').value.trim(),
+        url: row.querySelector('.image-url').value.trim()
+      })).filter((item) => item.id || item.name || item.url);
+    }
+
+    function getAudioLibrary() {
+      return Array.from(byId('audio-library').querySelectorAll('.audio-row')).map((row) => ({
+        id: row.querySelector('.audio-id').value.trim(),
+        name: row.querySelector('.audio-name').value.trim(),
+        category: row.querySelector('.audio-category').value,
+        url: row.querySelector('.audio-url').value.trim()
+      })).filter((item) => item.id || item.name || item.url);
+    }
+
+    function getCustomBlocks() {
+      return Array.from(byId('custom-block-library').querySelectorAll('.custom-block-row')).map((row) => ({
+        id: row.querySelector('.block-id').value.trim(),
+        tag: row.querySelector('.block-tag').value,
+        role: row.querySelector('.block-role').value,
+        display: row.querySelector('.block-display').value,
+        order: Number(row.querySelector('.block-order').value || 0),
+        area: row.querySelector('.block-area').value.trim(),
+        width: row.querySelector('.block-width').value.trim(),
+        className: row.querySelector('.block-class').value.trim(),
+        content: row.querySelector('.block-content').value.trim()
+      })).filter((item) => item.id || item.role !== 'custom' || item.content || item.area);
+    }
+
+    function addThemeImageRow(item = {}) {
+      addTemplateItem('theme-image-template', 'theme-image-library', (root) => {
+        root.querySelector('.image-id').value = item.id || '';
+        root.querySelector('.image-name').value = item.name || '';
+        root.querySelector('.image-url').value = item.url || '';
+      });
+      renderAll();
+    }
+
+    function addAudioRow(item = {}) {
+      addTemplateItem('audio-item-template', 'audio-library', (root) => {
+        root.querySelector('.audio-id').value = item.id || '';
+        root.querySelector('.audio-name').value = item.name || '';
+        root.querySelector('.audio-category').value = item.category || 'music';
+        root.querySelector('.audio-url').value = item.url || '';
+      });
+      renderAll();
+    }
+
+    function addCustomBlockRow(item = {}) {
+      addTemplateItem('custom-block-template', 'custom-block-library', (root) => {
+        root.querySelector('.block-id').value = item.id || '';
+        root.querySelector('.block-tag').value = item.tag || 'div';
+        root.querySelector('.block-role').value = item.role || 'custom';
+        root.querySelector('.block-display').value = item.display || 'block';
+        root.querySelector('.block-order').value = item.order || 1;
+        root.querySelector('.block-area').value = item.area || '';
+        root.querySelector('.block-width').value = item.width || '';
+        root.querySelector('.block-class').value = item.className || '';
+        root.querySelector('.block-content').value = item.content || '';
+      });
+      renderAll();
+    }
+
+    function buildTitleVariant() {
+      const align = byId('title-align').value;
+      const width = byId('title-width').value.trim();
+      return {
+        id: `title_${align}_${width.replaceAll(/[^a-z0-9]/gi, '_').toLowerCase()}`,
+        body: {
+          titleAlign: align,
+          titleWidth: width
+        }
+      };
+    }
+
+    function buildMediaVariant() {
+      const position = byId('media-position').value;
+      const width = byId('media-width').value.trim();
+      const ratio = byId('media-ratio').value.trim();
+      const layoutMode = byId('layout-mode').value;
+      return {
+        id: `media_${position}`,
+        body: {
+          mediaVisible: position !== 'hidden',
+          mediaWidth: position === 'hidden' ? '' : width,
+          mediaAspectRatio: position === 'hidden' ? '' : ratio,
+          splitMode: layoutMode === 'split' || position === 'left_panel' || position === 'right_panel'
+        }
+      };
+    }
+
+    function buildAnswersVariant() {
+      const answerLayout = byId('answer-layout').value;
+      const columnsMap = {
+        grid_2_columns: 2,
+        vertical_stack: 1,
+        grid_1_column_large: 1,
+        grid_3_columns: 3
+      };
+      return {
+        id: answerLayout,
+        body: {
+          answerColumns: columnsMap[answerLayout] || 2,
+          answerGap: Number(byId('answer-gap').value || 0),
+          answerMinHeight: Number(byId('answer-min-height').value || 0),
+          answerRadius: Number(byId('answer-radius').value || 0),
+          answerFontSize: Number(byId('answer-font-size').value || 0),
+          answerImageWidth: Number(byId('answer-image-width').value || 0),
+          answersWidth: byId('answers-width').value.trim()
+        }
+      };
+    }
+
+    function buildLayoutObject() {
+      const slideType = byId('slide-type').value;
+      const titleVariant = buildTitleVariant();
+      const mediaVariant = buildMediaVariant();
+      const answersVariant = buildAnswersVariant();
+      const structure = getCheckedValues('#structure-checks');
+
+      if (byId('layout-mode').value === 'split' && !structure.includes('split_media_answers')) {
+        structure.push('split_media_answers');
+      }
+
+      const layout = {
+        id: byId('layout-id').value.trim(),
+        label: getLabels(),
+        slideType,
+        canvasStructure: structure,
+        answersVariant: answersVariant.id,
+        mediaVariant: mediaVariant.id,
+        titleVariant: titleVariant.id,
+        customBlocks: getCustomBlocks()
+      };
+
+      if (slideType === 'quiz') {
+        layout.supportsAnswers = getCheckedValues('#supports-checks').map(Number).filter(Number.isFinite);
+      }
+
+      return { layout, titleVariant, mediaVariant, answersVariant };
+    }
+
+    function buildThemeObject() {
+      return {
+        id: byId('theme-id').value.trim(),
+        name: byId('theme-name').value.trim(),
+        url: byId('theme-bg-url').value.trim(),
+        description: byId('theme-description').value.trim(),
+        tokens: {
+          accent: byId('color-accent').value,
+          accentStrong: byId('color-accent-strong').value,
+          titleColor: byId('color-title').value,
+          titleSurface: byId('title-surface').value.trim(),
+          surface: byId('surface-color').value.trim(),
+          mediaBorderColor: byId('border-color').value,
+          mediaBorderWidth: Number(byId('border-width').value || 0),
+          answerRadius: Number(byId('theme-answer-radius').value || 0),
+          cardOverlay: byId('theme-overlay').value.trim()
+        },
+        imageLibrary: getThemeImages()
+      };
+    }
+
+    function buildAudioObject() {
+      return {
+        defaults: {
+          timer: byId('timer-value').value,
+          basePoints: Number(byId('base-points').value || 0),
+          speedBonusEnabled: byId('bonus-enabled').checked,
+          speedBonusWithinSeconds: Number(byId('bonus-seconds').value || 0)
+        },
+        audioLibrary: getAudioLibrary()
+      };
+    }
+
+    function buildQuestionTypeObject() {
+      const allowedMediaTypes = [];
+      if (byId('media-position').value !== 'hidden') {
+        allowedMediaTypes.push('image');
+      }
+      allowedMediaTypes.push('audio');
+
+      return {
+        id: byId('question-type-id').value.trim(),
+        name: byId('question-type-name').value.trim(),
+        icon: byId('question-type-icon').value.trim(),
+        desc: byId('question-type-desc').value.trim(),
+        enabled: true,
+        settings: {
+          slideType: byId('question-type-slide-type').value,
+          layoutId: (byId('question-type-layout-select')?.value || byId('question-type-layout-id').value || '').trim(),
+          answerCount: Number(byId('answer-count-default').value || 0),
+          allowMultiple: byId('allow-multiple').checked,
+          limits: {
+            questionTextMaxLength: 130,
+            answerTextMaxLength: 80
+          },
+          timer: {
+            enabled: true,
+            selected: byId('timer-value').value
+          },
+          scoring: {
+            basePoints: Number(byId('base-points').value || 0),
+            speedBonus: {
+              enabled: byId('bonus-enabled').checked,
+              withinSeconds: Number(byId('bonus-seconds').value || 0)
+            }
+          },
+          lang: byId('quiz-language').value.trim() || 'ro',
+          builderMode: byId('question-type-slide-type').value,
+          audio: {
+            musicEnabled: true,
+            musicUrl: '',
+            answerSoundsEnabled: true,
+            correctSoundUrl: '',
+            wrongSoundUrl: '',
+            gongEnabled: true,
+            gongStartUrl: '',
+            gongEndUrl: ''
+          },
+          themeId: byId('quiz-theme-select')?.value || byId('theme-id').value.trim(),
+          imageReveal: {
+            enabled: byId('image-slice-mode').value !== 'none',
+            mode: byId('image-slice-mode').value
+          },
+          answerPresentation: {
+            useMainMediaAsAnswerBackground: byId('use-main-image-bg').checked
+          },
+          allowedMediaTypes
+        }
+      };
+    }
+
+    function buildQuizBindingObject() {
+      const selectedLayoutId = (byId('question-type-layout-select')?.value || byId('question-type-layout-id').value || '').trim();
+      const selectedThemeId = (byId('quiz-theme-select')?.value || byId('theme-id').value || '').trim();
+      const selectedQuizMode = byId('question-type-slide-type').value || 'quiz';
+      const selectedLayout = (Array.isArray(layoutRegistryState) ? layoutRegistryState : []).find((layoutItem) => layoutItem.id === selectedLayoutId);
+
+      return {
+        id: `${byId('question-type-id').value.trim()}__binding`,
+        quizId: byId('question-type-id').value.trim(),
+        quizName: byId('question-type-name').value.trim(),
+        bindingMode: selectedQuizMode,
+        slideType: selectedQuizMode,
+        layoutId: selectedLayoutId,
+        layoutSlideType: selectedLayout?.slideType || '',
+        themeId: selectedThemeId,
+        language: byId('quiz-language').value.trim() || 'ro',
+        updatedAt: new Date().toISOString()
+      };
+    }
+
+    async function loadBuilderCatalogs() {
+      const [themesJson, questionTypesJson, layoutsJson] = await Promise.allSettled([
+        fetchJson('./builder-themes.json'),
+        fetchJson('./question-types.json'),
+        fetchJson('./builder-layouts.json')
+      ]);
+
+      themeCatalogState = themesJson.status === 'fulfilled' && Array.isArray(themesJson.value.themes)
+        ? themesJson.value.themes
+        : [];
+      questionTypeCatalogState = questionTypesJson.status === 'fulfilled' && Array.isArray(questionTypesJson.value.questionTypes)
+        ? questionTypesJson.value.questionTypes
+        : [];
+
+      const builderConfig = layoutsJson.status === 'fulfilled' && layoutsJson.value.builder
+        ? layoutsJson.value.builder
+        : {};
+
+      layoutRegistryState = Array.isArray(builderConfig.layoutRegistry) ? builderConfig.layoutRegistry : [];
+      titleVariantState = builderConfig.titleVariants || {};
+      mediaVariantState = builderConfig.mediaVariants || {};
+      answersVariantState = builderConfig.answersVariants || {};
+    }
+
+    async function deleteConfigEntity(action, id) {
+      if (!id) {
+        throw new Error('Lipseste ID-ul pentru stergere.');
+      }
+
+      return fetchJson(`${API_URL}?action=${action}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+    }
+
+    function populateThemeForm(theme = {}) {
+      byId('theme-id').value = theme.id || '';
+      byId('theme-name').value = theme.name || '';
+      byId('theme-description').value = theme.description || '';
+      byId('theme-bg-url').value = theme.url || '';
+      byId('theme-overlay').value = theme.tokens?.cardOverlay || '';
+      byId('color-accent').value = theme.tokens?.accent || '#2e85c7';
+      byId('color-accent-strong').value = theme.tokens?.accentStrong || '#0a5084';
+      byId('color-title').value = theme.tokens?.titleColor || '#0a5084';
+      byId('title-surface').value = theme.tokens?.titleSurface || 'rgba(255,255,255,0.96)';
+      byId('surface-color').value = theme.tokens?.surface || 'rgba(255,255,255,0.94)';
+      byId('border-color').value = theme.tokens?.mediaBorderColor || '#ff9f43';
+      byId('border-width').value = theme.tokens?.mediaBorderWidth || 4;
+      byId('theme-answer-radius').value = theme.tokens?.answerRadius || 22;
+
+      byId('theme-image-library').innerHTML = '';
+      (Array.isArray(theme.imageLibrary) ? theme.imageLibrary : []).forEach((item) => addThemeImageRow(item));
+      renderAll();
+    }
+
+    function inferQuestionTypeSlideType(item = {}) {
+      if (item?.settings?.builderMode === 'custom') return 'custom';
+      return item?.settings?.slideType === 'media' || item?.id === 'media' ? 'media' : 'quiz';
+    }
+
+    function populateLayoutFormFromRegistry(layoutId) {
+      const layoutItem = layoutRegistryState.find((item) => item.id === layoutId);
+      if (!layoutItem) return;
+
+      const titleVariant = titleVariantState[layoutItem.titleVariant] || {};
+      const mediaVariant = mediaVariantState[layoutItem.mediaVariant] || {};
+      const answersVariant = answersVariantState[layoutItem.answersVariant] || {};
+
+      byId('layout-id').value = layoutItem.id || '';
+      byId('slide-type').value = layoutItem.slideType || 'quiz';
+      byId('question-type-slide-type').value = layoutItem.slideType || 'quiz';
+      byId('structure-preset-id').value = '';
+      setCheckedValues('#structure-checks', Array.isArray(layoutItem.canvasStructure) ? layoutItem.canvasStructure : []);
+      byId('title-align').value = titleVariant.titleAlign || 'center';
+      byId('title-width').value = titleVariant.titleWidth || 'min(820px, 95%)';
+      byId('media-position').value = layoutItem.mediaVariant || 'top_large';
+      byId('media-width').value = mediaVariant.mediaWidth || 'min(720px, 90%)';
+      byId('media-ratio').value = mediaVariant.mediaAspectRatio || '16/9';
+      byId('description-position').value = mediaVariant.splitMode ? 'right_panel' : 'below_media';
+      byId('answer-layout').value = layoutItem.answersVariant || 'grid_2_columns';
+      byId('answer-gap').value = answersVariant.answerGap || 18;
+      byId('answer-min-height').value = answersVariant.answerMinHeight || 84;
+      byId('answer-radius').value = answersVariant.answerRadius || 22;
+      byId('answer-font-size').value = answersVariant.answerFontSize || 18;
+      byId('answer-image-width').value = answersVariant.answerImageWidth || 140;
+      byId('answers-width').value = answersVariant.answersWidth || 'min(900px, 95%)';
+      setCheckedValues('#supports-checks', Array.isArray(layoutItem.supportsAnswers) ? layoutItem.supportsAnswers.map(String) : []);
+      byId('custom-block-library').innerHTML = '';
+      (Array.isArray(layoutItem.customBlocks) ? layoutItem.customBlocks : []).forEach((item) => addCustomBlockRow(item));
+      syncQuestionTypeBindingFromLayout();
+    }
+
+    function populateQuestionTypeForm(item = {}) {
+      byId('question-type-id').value = item.id || '';
+      byId('question-type-name').value = item.name || '';
+      byId('question-type-icon').value = item.icon || '';
+      byId('question-type-desc').value = item.desc || '';
+      byId('question-type-slide-type').value = inferQuestionTypeSlideType(item);
+      byId('quiz-language').value = item.settings?.lang || 'ro';
+      byId('question-type-layout-id').value = item.settings?.layoutId || byId('layout-id').value || '';
+      renderQuestionLayoutOptions();
+      if (byId('question-type-layout-select')) {
+        byId('question-type-layout-select').value = item.settings?.layoutId || byId('question-type-layout-select').value;
+      }
+      byId('answer-count-default').value = String(item.settings?.answerCount || 4);
+      byId('allow-multiple').checked = !!item.settings?.allowMultiple;
+      byId('timer-value').value = item.settings?.timer?.selected || '20s';
+      byId('base-points').value = item.settings?.scoring?.basePoints || 1000;
+      byId('bonus-enabled').checked = !!item.settings?.scoring?.speedBonus?.enabled;
+      byId('bonus-seconds').value = item.settings?.scoring?.speedBonus?.withinSeconds || 10;
+      byId('image-slice-mode').value = item.settings?.imageReveal?.mode || 'none';
+      byId('use-main-image-bg').checked = !!item.settings?.answerPresentation?.useMainMediaAsAnswerBackground;
+
+      byId('audio-library').innerHTML = '';
+      const audioLibrary = [];
+      if (item.settings?.audio?.musicUrl) {
+        audioLibrary.push({ id: `${item.id || 'quiz'}_music`, name: `${item.name || 'Quiz'} music`, category: 'music', url: item.settings.audio.musicUrl });
+      }
+      if (item.settings?.audio?.correctSoundUrl) {
+        audioLibrary.push({ id: `${item.id || 'quiz'}_correct`, name: `${item.name || 'Quiz'} correct`, category: 'correct', url: item.settings.audio.correctSoundUrl });
+      }
+      if (item.settings?.audio?.wrongSoundUrl) {
+        audioLibrary.push({ id: `${item.id || 'quiz'}_wrong`, name: `${item.name || 'Quiz'} wrong`, category: 'wrong', url: item.settings.audio.wrongSoundUrl });
+      }
+      audioLibrary.forEach((audioItem) => addAudioRow(audioItem));
+      applyQuizBuilderMode();
+    }
+
+    function syncAutoGeneratedIds() {
+      const quizName = byId('question-type-name').value.trim() || 'quiz';
+      const generatedQuizId = safeId(quizName);
+      const builderMode = byId('question-type-slide-type').value || byId('slide-type').value || 'quiz';
+      const generatedLayoutId = `${builderMode}_${generatedQuizId}_layout`;
+
+      byId('question-type-id').value = generatedQuizId;
+      byId('layout-id').value = generatedLayoutId;
+      byId('question-type-layout-id').value = generatedLayoutId;
+    }
+
+    function applyQuizBuilderMode() {
+      const builderMode = byId('question-type-slide-type').value || 'quiz';
+      const showCustom = builderMode === 'custom';
+
+      if (byId('layout-custom-step')) {
+        byId('layout-custom-step').style.display = showCustom ? '' : 'none';
+      }
+
+      renderQuestionLayoutOptions();
+      syncQuestionTypeBindingFromLayout();
+      syncAutoGeneratedIds();
+      updateQuestionBindingPreview();
+    }
+
+    function enterStructureBuilderMode() {
+      const cardsStep = byId('quiz-cards-step');
+      if (cardsStep) {
+        cardsStep.style.display = 'none';
+      }
+
+      const builderMode = byId('question-type-slide-type').value || 'quiz';
+      byId('slide-type').value = builderMode === 'media' ? 'media' : 'quiz';
+
+      syncQuestionTypeBindingFromLayout();
+      renderLayoutCards();
+      setActiveTab('layout');
+      renderAll();
+      byId('layout-identity-step')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      showStatus('Acum construiesti structura blocurilor in Layout Builder.', 'success');
+    }
+
+    function renderQuizThemeOptions() {
+      const select = byId('quiz-theme-select');
+      if (!select) return;
+
+      const options = (Array.isArray(themeCatalogState) ? themeCatalogState : []).map((item) => `
+        <option value="${escapeHtml(item.id || '')}">${escapeHtml(item.name || item.id || 'Theme')}</option>
+      `).join('');
+
+      select.innerHTML = options || '<option value="">Nu exista teme create</option>';
+      const currentThemeId = byId('theme-id')?.value || '';
+      if (currentThemeId && Array.from(select.options).some((option) => option.value === currentThemeId)) {
+        select.value = currentThemeId;
+      }
+    }
+
+    function renderQuestionLayoutOptions() {
+      const select = byId('question-type-layout-select');
+      if (!select) return;
+
+      const currentMode = byId('question-type-slide-type')?.value || 'quiz';
+      const currentSelectedValue = select.value || byId('question-type-layout-id')?.value || '';
+
+      const availableLayouts = (Array.isArray(layoutRegistryState) ? layoutRegistryState : []).filter((layoutItem) => {
+        if (currentMode === 'custom') return true;
+        return (layoutItem.slideType || 'quiz') === currentMode;
+      });
+
+      select.innerHTML = availableLayouts.length
+        ? availableLayouts.map((layoutItem) => {
+            const label = (layoutItem.label && (layoutItem.label.ro || layoutItem.label.en)) || layoutItem.id || 'Layout';
+            return `<option value="${escapeHtml(layoutItem.id || '')}">${escapeHtml(label)}</option>`;
+          }).join('')
+        : '<option value="">Nu exista layout compatibil</option>';
+
+      if (currentSelectedValue && Array.from(select.options).some((option) => option.value === currentSelectedValue)) {
+        select.value = currentSelectedValue;
+      } else if (availableLayouts.length) {
+        select.value = availableLayouts[0].id || '';
+      }
+
+      if (byId('question-type-layout-id')) {
+        byId('question-type-layout-id').value = select.value || '';
+      }
+
+      updateQuestionBindingPreview();
+    }
+
+    function updateQuestionBindingPreview() {
+      const previewField = byId('question-binding-preview');
+      if (!previewField) return;
+
+      const quizMode = byId('question-type-slide-type')?.value || 'quiz';
+      const layoutId = byId('question-type-layout-select')?.value || byId('question-type-layout-id')?.value || '-';
+      const themeId = byId('quiz-theme-select')?.value || byId('theme-id')?.value || '-';
+      previewField.value = `${quizMode} -> ${layoutId} -> ${themeId}`;
+    }
+
+    function renderThemeCards() {
+      const grid = byId('theme-cards-grid');
+      const items = Array.isArray(themeCatalogState) ? themeCatalogState : [];
+      const cards = items.map((themeItem) => `
+        <div class="manage-card">
+          <div class="manage-card-media">${themeItem.url ? `<img src="${escapeHtml(themeItem.url)}" alt="${escapeHtml(themeItem.name || themeItem.id || 'theme')}">` : ''}</div>
+          <div class="manage-card-body">
+            <h4>${escapeHtml(themeItem.name || themeItem.id || 'Theme')}</h4>
+            <p>${escapeHtml(themeItem.description || themeItem.id || '')}</p>
+          </div>
+          <div class="manage-card-footer">
+            <button type="button" class="secondary" data-action="edit-theme-card" data-id="${escapeHtml(themeItem.id || '')}">Edit</button>
+            <button type="button" class="link" data-action="delete-theme-card" data-id="${escapeHtml(themeItem.id || '')}">Sterge</button>
+          </div>
+        </div>
+      `).join('');
+
+      grid.innerHTML = cards + `
+        <button type="button" class="manage-card add-card" data-action="add-theme-card">
+          <div>
+            <div class="plus">+</div>
+            <strong>Theme nou</strong>
+          </div>
+        </button>
+      `;
+    }
+
+    function renderLayoutCards() {
+      const grid = byId('layout-cards-grid');
+      const selectedSlideType = byId('slide-type')?.value || 'quiz';
+      const items = (Array.isArray(layoutRegistryState) ? layoutRegistryState : [])
+        .filter((item) => (item.slideType || 'quiz') === selectedSlideType);
+
+      const cards = items.map((layoutItem) => {
+        const title = (layoutItem.label && (layoutItem.label.ro || layoutItem.label.en)) || layoutItem.id || 'Layout';
+        const structure = Array.isArray(layoutItem.canvasStructure) ? layoutItem.canvasStructure.join(', ') : '';
+        return `
+          <div class="manage-card">
+            <div class="manage-card-media">
+              <div style="padding:14px;text-align:center;color:#0a4f90;font-weight:900;">
+                ${(layoutItem.slideType || 'quiz').toUpperCase()}
+              </div>
+            </div>
+            <div class="manage-card-body">
+              <h4>${escapeHtml(title)}</h4>
+              <p>${escapeHtml(structure || layoutItem.id || '')}</p>
+            </div>
+            <div class="manage-card-footer">
+              <button type="button" class="secondary" data-action="edit-layout-card" data-id="${escapeHtml(layoutItem.id || '')}">Edit</button>
+              <button type="button" class="link" data-action="delete-layout-card" data-id="${escapeHtml(layoutItem.id || '')}">Sterge</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      grid.innerHTML = cards + `
+        <button type="button" class="manage-card add-card" data-action="add-layout-card">
+          <div>
+            <div class="plus">+</div>
+            <strong>Layout nou</strong>
+          </div>
+        </button>
+      `;
+    }
+
+    function renderQuestionCards() {
+      const grid = byId('question-cards-grid');
+      const selectedSlideType = byId('question-type-slide-type')?.value || 'quiz';
+      const items = (Array.isArray(questionTypeCatalogState) ? questionTypeCatalogState : [])
+        .filter((item) => inferQuestionTypeSlideType(item) === selectedSlideType);
+
+      const cards = items.map((item) => `
+        <div class="manage-card">
+          <div class="manage-card-media">${item.icon ? `<img src="${escapeHtml(item.icon)}" alt="${escapeHtml(item.name || item.id || 'quiz')}">` : ''}</div>
+          <div class="manage-card-body">
+            <h4>${escapeHtml(item.name || item.id || 'Quiz')}</h4>
+            <p>${escapeHtml(item.desc || item.settings?.layoutId || '')}</p>
+          </div>
+          <div class="manage-card-footer">
+            <button type="button" class="secondary" data-action="edit-question-card" data-id="${escapeHtml(item.id || '')}">Edit</button>
+            <button type="button" class="link" data-action="delete-question-card" data-id="${escapeHtml(item.id || '')}">Sterge</button>
+          </div>
+        </div>
+      `).join('');
+
+      grid.innerHTML = cards + `
+        <button type="button" class="manage-card add-card" data-action="add-question-card">
+          <div>
+            <div class="plus">+</div>
+            <strong>Quiz nou</strong>
+          </div>
+        </button>
+      `;
+    }
+
+    function syncQuestionTypeBindingFromLayout() {
+      const layoutIdField = byId('question-type-layout-id');
+      const layoutSelectField = byId('question-type-layout-select');
+      const sourceLayoutId = byId('layout-id').value.trim();
+      const sourceSlideType = byId('slide-type').value;
+      const currentBuilderMode = byId('question-type-slide-type')?.value || 'quiz';
+
+      if (layoutSelectField) {
+        const optionExists = Array.from(layoutSelectField.options).some((option) => option.value === sourceLayoutId);
+        if (sourceLayoutId && optionExists && (currentBuilderMode === 'custom' || currentBuilderMode === sourceSlideType)) {
+          layoutSelectField.value = sourceLayoutId;
+        }
+      }
+
+      if (layoutIdField) {
+        layoutIdField.value = layoutSelectField?.value || sourceLayoutId || '';
+      }
+
+      updateQuestionBindingPreview();
+    }
+
+    function renderSummary(layoutConfig, themeConfig, audioConfig, questionTypeConfig) {
+      const items = [
+        ['Layout', layoutConfig.layout.id],
+        ['Tip builder', questionTypeConfig.settings?.builderMode || questionTypeConfig.settings?.slideType || '-'],
+        ['Tip slide', layoutConfig.layout.slideType],
+        ['Structura', layoutConfig.layout.canvasStructure.join(', ') || '-'],
+        ['Raspunsuri permise', (layoutConfig.layout.supportsAnswers || []).join(', ') || '-'],
+        ['Pozitie media', byId('media-position').value],
+        ['Impartire imagine', byId('image-slice-mode').value],
+        ['Theme', themeConfig.name],
+        ['Imagini in biblioteca', String(themeConfig.imageLibrary.length)],
+        ['Sunete in biblioteca', String(audioConfig.audioLibrary.length)],
+        ['Blocuri custom', String((layoutConfig.layout.customBlocks || []).length)],
+        ['Question type', questionTypeConfig.name],
+        ['Question type slide type', questionTypeConfig.settings?.slideType || '-'],
+        ['Question type layout', questionTypeConfig.settings?.layoutId || '-']
+      ];
+
+      byId('summary-list').innerHTML = items.map(([label, value]) => `
+        <div class="summary-item">
+          <strong>${escapeHtml(label)}</strong>
+          <span>${escapeHtml(value)}</span>
+        </div>
+      `).join('');
+    }
+
+    function renderCanvasPreview(layoutConfig, themeConfig) {
+      const structure = layoutConfig.layout.canvasStructure;
+      const answerColumns = layoutConfig.answersVariant.body.answerColumns || 2;
+      const splitMode = layoutConfig.mediaVariant.body.splitMode;
+      const titleHtml = structure.includes('title')
+        ? `<div class="demo-title" style="text-align:${escapeHtml(layoutConfig.titleVariant.body.titleAlign)}; color:${escapeHtml(themeConfig.tokens.titleColor)};">Titlu quiz</div>`
+        : '';
+      const mediaHtml = structure.includes('media') || structure.includes('split_media_answers')
+        ? `<div class="demo-media">Imagine / Video / YouTube</div>`
+        : '';
+      const answersCount = Number(byId('answer-count-default').value || 4);
+      const answersHtml = structure.includes('answers') || structure.includes('split_media_answers')
+        ? `
+          <div class="demo-answers" style="grid-template-columns:repeat(${answerColumns}, minmax(0, 1fr));">
+            ${Array.from({ length: answersCount }, (_, index) => `
+              <div class="demo-answer" style="border-radius:${layoutConfig.answersVariant.body.answerRadius}px;">
+                Raspuns ${index + 1}
+              </div>
+            `).join('')}
+          </div>
+        `
+        : '';
+      const descriptionHtml = structure.includes('description')
+        ? `<div class="demo-answer" style="grid-column:1/-1;">Descriere / text explicativ</div>`
+        : '';
+      const metaHtml = structure.includes('meta')
+        ? `<div class="demo-answer" style="grid-column:1/-1;">Meta: timer, info, badge</div>`
+        : '';
+
+      const contentHtml = splitMode
+        ? `<div class="demo-split">${mediaHtml}${answersHtml || descriptionHtml}</div>`
+        : `${mediaHtml}${descriptionHtml}${answersHtml}`;
+
+      byId('canvas-preview').style.setProperty('--demo-bg', `url('${themeConfig.url}') center / cover no-repeat`);
+      byId('canvas-preview').style.setProperty('--demo-title-color', themeConfig.tokens.titleColor);
+      byId('canvas-preview').style.setProperty('--demo-border', themeConfig.tokens.mediaBorderColor);
+      byId('canvas-preview').style.setProperty('--demo-answer-radius', `${themeConfig.tokens.answerRadius || layoutConfig.answersVariant.body.answerRadius || 18}px`);
+      byId('canvas-preview').innerHTML = `${titleHtml}${contentHtml}${metaHtml}`;
+    }
+
+    function renderOutputs() {
+      const layoutConfig = buildLayoutObject();
+      const themeConfig = buildThemeObject();
+      const audioConfig = buildAudioObject();
+      const questionTypeConfig = buildQuestionTypeObject();
+      const quizBindingConfig = buildQuizBindingObject();
+
+      const layoutPayload = {
+        addTo: 'builder-layouts.json',
+        layoutRegistryItem: layoutConfig.layout,
+        titleVariantEntry: { [layoutConfig.titleVariant.id]: layoutConfig.titleVariant.body },
+        mediaVariantEntry: { [layoutConfig.mediaVariant.id]: layoutConfig.mediaVariant.body },
+        answersVariantEntry: { [layoutConfig.answersVariant.id]: layoutConfig.answersVariant.body }
+      };
+
+      const themePayload = {
+        addTo: 'builder-themes.json',
+        themeItem: themeConfig
+      };
+
+      const questionTypePayload = {
+        addTo: 'builder-audio.json + question-types.json + quizzes.json',
+        audioLibraryItems: audioConfig.audioLibrary,
+        defaults: audioConfig.defaults,
+        questionTypeItem: questionTypeConfig,
+        quizBindingItem: quizBindingConfig
+      };
+
+      byId('layout-output').value = toPrettyJson(layoutPayload);
+      byId('theme-output').value = toPrettyJson(themePayload);
+      byId('question-type-output').value = toPrettyJson(questionTypePayload);
+
+      renderSummary(layoutConfig, themeConfig, audioConfig, questionTypeConfig);
+      renderCanvasPreview(layoutConfig, themeConfig);
+      renderStructureCards();
+      renderLayoutCards();
+      renderManualLibrary('image', themeConfig.imageLibrary || []);
+      renderManualLibrary('audio', audioConfig.audioLibrary || []);
+      renderThemeCards();
+      renderQuizThemeOptions();
+      renderQuestionLayoutOptions();
+      renderQuestionCards();
+      updateQuestionBindingPreview();
+    }
+
+    function buildSavePayload() {
+      const layoutConfig = buildLayoutObject();
+      const themeConfig = buildThemeObject();
+      const audioConfig = buildAudioObject();
+      const questionTypeConfig = buildQuestionTypeObject();
+      const quizBindingConfig = buildQuizBindingObject();
+
+      return {
+        layoutPayload: {
+          addTo: 'builder-layouts.json',
+          layoutRegistryItem: layoutConfig.layout,
+          titleVariantEntry: { [layoutConfig.titleVariant.id]: layoutConfig.titleVariant.body },
+          mediaVariantEntry: { [layoutConfig.mediaVariant.id]: layoutConfig.mediaVariant.body },
+          answersVariantEntry: { [layoutConfig.answersVariant.id]: layoutConfig.answersVariant.body }
+        },
+        themePayload: {
+          addTo: 'builder-themes.json',
+          themeItem: themeConfig
+        },
+        questionTypePayload: {
+          addTo: 'builder-audio.json + question-types.json + builder-core.json + quizzes.json',
+          audioLibraryItems: audioConfig.audioLibrary,
+          defaults: audioConfig.defaults,
+          questionTypeItem: questionTypeConfig,
+          quizBindingItem: quizBindingConfig
+        }
+      };
+    }
+
+    function copyOutput(id) {
+      const field = byId(id);
+      field.select();
+      document.execCommand('copy');
+    }
+
+    function downloadOutput(id, fileName) {
+      const blob = new Blob([byId(id).value], { type: 'application/json;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = fileName;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function renderAll() {
+      syncQuestionTypeBindingFromLayout();
+      renderOutputs();
+    }
+
+    function applyStructurePreset(presetId) {
+      const preset = STRUCTURE_PRESETS[presetId];
+      if (!preset) {
+        return;
+      }
+
+      byId('structure-preset-id').value = presetId;
+      byId('slide-type').value = preset.slideType;
+      byId('layout-mode').value = preset.layoutMode;
+      byId('title-align').value = preset.titleAlign;
+      byId('media-position').value = preset.mediaPosition;
+      byId('description-position').value = preset.descriptionPosition;
+      setCheckedValues('#structure-checks', preset.structure);
+      syncQuestionTypeBindingFromLayout();
+      renderAll();
+    }
+
+    function renderStructureCards() {
+      const activePreset = byId('structure-preset-id').value;
+      document.querySelectorAll('[data-structure-preset]').forEach((card) => {
+        card.classList.toggle('active', card.dataset.structurePreset === activePreset);
+      });
+    }
+
+    function renderServerAssets(type, items) {
+      serverAssetState[type] = items;
+      const targetId = type === 'image' ? 'server-image-library' : 'server-audio-library';
+      const target = byId(targetId);
+
+      if (!items.length) {
+        target.innerHTML = `<div class="small">Nu exista fisiere incarcate pe server pentru ${escapeHtml(type)}.</div>`;
+        return;
+      }
+
+      target.innerHTML = items.map((item) => {
+        const useButton = type === 'image'
+          ? `<button type="button" class="secondary" data-action="use-bg" data-url="${escapeHtml(item.url)}">Foloseste ca background</button>
+             <button type="button" class="secondary" data-action="add-image-row" data-id="${escapeHtml(item.id)}" data-name="${escapeHtml(item.name)}" data-url="${escapeHtml(item.url)}">Adauga in biblioteca</button>`
+          : `<button type="button" class="secondary" data-action="add-audio-row" data-id="${escapeHtml(item.id)}" data-name="${escapeHtml(item.name)}" data-url="${escapeHtml(item.url)}">Adauga in biblioteca</button>`;
+
+        const preview = type === 'image'
+          ? `<img class="asset-preview" src="${escapeHtml(item.url)}" alt="${escapeHtml(item.name)}">`
+          : '';
+
+        return `
+          <div class="asset-item">
+            ${preview}
+            <h4>${escapeHtml(item.name)}</h4>
+            <p><strong>Public URL:</strong> ${escapeHtml(item.url)}</p>
+            <p><strong>Public path:</strong> ${escapeHtml(item.publicPath || '-')}</p>
+            <p><strong>Server path:</strong> ${escapeHtml(item.serverPath || '-')}</p>
+            <div class="btn-row">
+              ${useButton}
+              <button type="button" class="link" data-action="delete-asset" data-type="${escapeHtml(type)}" data-name="${escapeHtml(item.name)}">Sterge de pe server</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function removeManualLibraryItem(type, id, url) {
+      const selector = type === 'image' ? '#theme-image-library .image-row' : '#audio-library .audio-row';
+      document.querySelectorAll(selector).forEach((row) => {
+        if (type === 'image') {
+          const currentId = row.querySelector('.image-id').value.trim();
+          const currentUrl = row.querySelector('.image-url').value.trim();
+          if ((id && currentId === id) || (url && currentUrl === url)) {
+            row.remove();
+          }
+        } else {
+          const currentId = row.querySelector('.audio-id').value.trim();
+          const currentUrl = row.querySelector('.audio-url').value.trim();
+          if ((id && currentId === id) || (url && currentUrl === url)) {
+            row.remove();
+          }
+        }
+      });
+      renderAll();
+      showStatus('Elementul a fost scos din biblioteca builderului.', 'success');
+    }
+
+    function renderManualLibrary(type, items) {
+      const target = byId(type === 'image' ? 'manual-image-library' : 'manual-audio-library');
+      if (!items.length) {
+        target.innerHTML = `<div class="small">Nu exista elemente adaugate manual pentru ${escapeHtml(type)}.</div>`;
+        return;
+      }
+
+      target.innerHTML = items.map((item) => {
+        const preview = type === 'image'
+          ? `<img class="asset-preview" src="${escapeHtml(item.url)}" alt="${escapeHtml(item.name || item.id)}">`
+          : '';
+        const extra = type === 'audio'
+          ? `<p>Categorie: ${escapeHtml(item.category || 'music')}</p>`
+          : '';
+        const useButton = type === 'image'
+          ? `<button type="button" class="secondary" data-action="use-bg" data-url="${escapeHtml(item.url)}">Foloseste ca background</button>`
+          : '';
+
+        return `
+          <div class="asset-item">
+            ${preview}
+            <h4>${escapeHtml(item.name || item.id || 'Element extern')}</h4>
+            <p>ID: ${escapeHtml(item.id || '-')}</p>
+            <p>${escapeHtml(item.url || '')}</p>
+            ${extra}
+            <div class="btn-row">
+              ${useButton}
+              <button type="button" class="link" data-action="remove-manual-${type}" data-id="${escapeHtml(item.id || '')}" data-url="${escapeHtml(item.url || '')}">Sterge din builder</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderAssetPicker() {
+      const type = assetPickerType || 'image';
+      const items = serverAssetState[type] || [];
+      const canSwitchType = assetPickerMode === 'media-library';
+      byId('asset-picker-title').textContent = type === 'image' ? 'Manager biblioteca imagini' : 'Manager biblioteca audio';
+      byId('popup-type-image').style.display = canSwitchType ? 'inline-flex' : 'none';
+      byId('popup-type-audio').style.display = canSwitchType ? 'inline-flex' : 'none';
+      byId('popup-type-image').classList.toggle('active', type === 'image');
+      byId('popup-type-audio').classList.toggle('active', type === 'audio');
+      byId('popup-upload-files').accept = type === 'audio' ? 'audio/*' : 'image/*';
+      byId('popup-dropzone-title').textContent = type === 'image' ? 'Incarca imaginea' : 'Incarca fisierul audio';
+      byId('popup-dropzone-meta').textContent = type === 'image'
+        ? 'Apasa aici sau trage imaginea in aceasta zona.'
+        : 'Apasa aici sau trage fisierul audio in aceasta zona.';
+      const grid = byId('asset-picker-grid');
+      if (!items.length) {
+        grid.innerHTML = `<div class="small">Biblioteca de ${escapeHtml(type)} este goala.</div>`;
+        return;
+      }
+
+      grid.innerHTML = items.map((item) => {
+        const preview = type === 'image' ? `<img class="asset-preview" src="${escapeHtml(item.url)}" alt="${escapeHtml(item.name)}">` : '';
+        return `
+          <div class="popup-item">
+            ${preview}
+            <div class="btn-row">
+              <button type="button" class="good" data-action="select-asset" data-mode="${escapeHtml(assetPickerMode)}" data-type="${escapeHtml(type)}" data-id="${escapeHtml(item.id)}" data-name="${escapeHtml(item.name)}" data-url="${escapeHtml(item.url)}">Alege</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openAssetPicker(mode, target = null, forcedType = '') {
+      assetPickerMode = mode;
+      assetPickerTarget = target;
+      assetPickerType = forcedType || (mode.includes('audio') ? 'audio' : 'image');
+      byId('popup-link-id').value = '';
+      byId('popup-link-name').value = '';
+      byId('popup-link-url').value = '';
+      byId('popup-upload-files').value = '';
+      renderAssetPicker();
+      openPopup('asset-picker-popup');
+    }
+
+    function applyPickedAsset(mode, item) {
+      if (mode === 'media-library') {
+        if (assetPickerType === 'audio') {
+          addAudioRow({ id: item.id, name: item.name, url: item.url, category: 'music' });
+        } else {
+          addThemeImageRow(item);
+        }
+      }
+      if (mode === 'theme-bg') {
+        byId('theme-bg-url').value = item.url;
+      }
+      if (mode === 'theme-image') {
+        addThemeImageRow(item);
+      }
+      if (mode === 'theme-image-row' && assetPickerTarget) {
+        const row = assetPickerTarget.closest('.image-row');
+        if (row) {
+          row.querySelector('.image-id').value = item.id || '';
+          row.querySelector('.image-name').value = item.name || '';
+          row.querySelector('.image-url').value = item.url || '';
+        }
+      }
+      if (mode === 'question-icon') {
+        byId('question-type-icon').value = item.url;
+      }
+      if (mode === 'audio-library') {
+        addAudioRow({ id: item.id, name: item.name, url: item.url, category: 'music' });
+      }
+      if (mode === 'audio-row' && assetPickerTarget) {
+        const row = assetPickerTarget.closest('.audio-row');
+        if (row) {
+          row.querySelector('.audio-id').value = item.id || '';
+          row.querySelector('.audio-name').value = item.name || '';
+          row.querySelector('.audio-url').value = item.url || '';
+        }
+      }
+      renderAll();
+      closePopup('asset-picker-popup');
+      assetPickerTarget = null;
+      showStatus('Asset-ul a fost ales din biblioteca.', 'success');
+    }
+
+    function renderGradientPreview() {
+      byId('gradient-preview-box').style.background = getGradientCss();
+    }
+
+    function renderGradientLibrary() {
+      const items = getGradientLibrary();
+      const target = byId('gradient-library-grid');
+      if (!items.length) {
+        target.innerHTML = `<div class="small">Nu exista gradiente salvate.</div>`;
+        return;
+      }
+
+      target.innerHTML = items.map((item, index) => `
+        <div class="popup-item">
+          <div class="gradient-preview" style="background:${escapeHtml(item.css)};"></div>
+          <h4>${escapeHtml(item.name)}</h4>
+          <p>${escapeHtml(item.css)}</p>
+          <div class="btn-row">
+            <button type="button" class="secondary" data-action="use-gradient" data-css="${escapeHtml(item.css)}">Foloseste</button>
+            <button type="button" class="link" data-action="delete-gradient" data-index="${index}">Sterge</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openGradientPopup() {
+      renderGradientPreview();
+      renderGradientLibrary();
+      openPopup('gradient-popup');
+    }
+
+    function renderColorLibrary() {
+      const items = getColorLibrary();
+      const target = byId('color-library-grid');
+      if (!items.length) {
+        target.innerHTML = `<div class="small">Nu exista culori salvate.</div>`;
+        return;
+      }
+      target.innerHTML = items.map((item, index) => `
+        <div class="popup-item">
+          <div class="gradient-preview" style="height:70px;background:${escapeHtml(item.value)};"></div>
+          <h4>${escapeHtml(item.name)}</h4>
+          <p>${escapeHtml(item.value)}</p>
+          <div class="btn-row">
+            <button type="button" class="secondary" data-action="use-popup-color" data-value="${escapeHtml(item.value)}">Foloseste</button>
+            <button type="button" class="link" data-action="delete-popup-color" data-index="${index}">Sterge</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openColorPopup(targetId) {
+      colorPickerTarget = targetId;
+      const current = byId(targetId).value || '#2e85c7';
+      byId('color-popup-value').value = current;
+      byId('color-popup-name').value = targetId;
+      renderColorLibrary();
+      openPopup('color-popup');
+    }
+
+    async function uploadAssetsFromPopup() {
+      const type = assetPickerType || 'image';
+      const input = byId('popup-upload-files');
+      if (!input.files || !input.files.length) {
+        showStatus('Selecteaza fisierul in popup inainte de upload.', 'error');
+        return;
+      }
+      await ensureUploadDirectories();
+      const formData = new FormData();
+      Array.from(input.files).forEach((file) => formData.append('upload_files[]', file));
+      const data = await fetchJson(`${API_URL}?action=upload_assets&type=${encodeURIComponent(type)}`, { method: 'POST', body: formData });
+      renderServerAssets(type, data.items || []);
+      input.value = '';
+      renderAssetPicker();
+      showStatus('Fisierul a fost incarcat si este disponibil in popup.', 'success');
+    }
+
+    function saveExternalLinkFromPopup() {
+      const url = byId('popup-link-url').value.trim();
+      if (!url) {
+        showStatus('Completeaza linkul in popup.', 'error');
+        return;
+      }
+      const item = {
+        id: byId('popup-link-id').value.trim() || safeId(byId('popup-link-name').value || url),
+        name: byId('popup-link-name').value.trim() || 'Asset extern',
+        url
+      };
+      if (assetPickerMode === 'media-library') {
+        if (assetPickerType === 'audio') {
+          addAudioRow({ ...item, category: 'music' });
+        } else {
+          addThemeImageRow(item);
+        }
+        renderAll();
+        closePopup('asset-picker-popup');
+        showStatus('Linkul extern a fost adaugat in biblioteca.', 'success');
+        byId('popup-link-id').value = '';
+        byId('popup-link-name').value = '';
+        byId('popup-link-url').value = '';
+        return;
+      }
+      applyPickedAsset(assetPickerMode, item);
+      byId('popup-link-id').value = '';
+      byId('popup-link-name').value = '';
+      byId('popup-link-url').value = '';
+    }
+
+    async function loadAssetLibrary(type) {
+      const data = await fetchJson(`${API_URL}?action=list_assets&type=${encodeURIComponent(type)}`);
+      renderServerAssets(type, data.items || []);
+    }
+
+    function setAssetPickerType(type) {
+      if (assetPickerMode !== 'media-library') {
+        return;
+      }
+      assetPickerType = type === 'audio' ? 'audio' : 'image';
+      renderAssetPicker();
+    }
+
+    async function scanApifyLibrary() {
+      const token = byId('apify-token').value.trim();
+      const datasetId = byId('apify-dataset-id').value.trim();
+      const apiUrl = byId('apify-api-url').value.trim();
+      const type = byId('apify-asset-type').value;
+
+      if (!token && !apiUrl) {
+        showStatus('Completeaza tokenul Apify sau pune direct un URL API.', 'error');
+        return;
+      }
+
+      showStatus('Scanez biblioteca prin Apify...', 'info');
+      const data = await fetchJson(`${API_URL}?action=scan_apify`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token, datasetId, apiUrl, type })
+      });
+
+      const items = Array.isArray(data.items) ? data.items : [];
+      if (type === 'audio') {
+        items.forEach((item) => addAudioRow({ ...item, category: item.category || 'music' }));
+      } else {
+        items.forEach((item) => addThemeImageRow(item));
+      }
+      renderAll();
+      showStatus(data.message || `Scanare terminata. Elemente importate: ${items.length}`, 'success');
+    }
+
+    async function ensureUploadDirectories() {
+      const data = await fetchJson(`${API_URL}?action=ensure_upload_dirs`);
+      const details = (data.directories || [])
+        .map((item) => `${item.exists ? 'ok' : 'lipsa'} | ${item.writable ? 'writable' : 'nu se poate scrie'} | ${item.path}`)
+        .join(' ; ');
+      showStatus(`${data.message}${details ? ' ' + details : ''}`, data.message.includes('nu este inscriptibil') ? 'error' : 'success');
+      return data;
+    }
+
+    async function uploadAssets(type) {
+      const input = byId(type === 'image' ? 'theme-image-files' : 'audio-files');
+      if (!input.files || !input.files.length) {
+        showStatus(`Selecteaza mai intai fisiere pentru ${type}.`, 'error');
+        return;
+      }
+
+      await ensureUploadDirectories();
+
+      const formData = new FormData();
+      formData.append('type', type);
+      Array.from(input.files).forEach((file) => formData.append('upload_files[]', file));
+
+      showStatus(`Incarc fisierele ${type} pe server...`, 'info');
+      const data = await fetchJson(`${API_URL}?action=upload_assets&type=${encodeURIComponent(type)}`, { method: 'POST', body: formData });
+      renderServerAssets(type, data.items || []);
+      input.value = '';
+      const warnings = (data.errors || []).filter(Boolean);
+      showStatus(
+        warnings.length
+          ? `Upload terminat cu avertismente: ${warnings.join(' ')}`
+          : `Fisierele ${type} au fost incarcate pe server.`,
+        warnings.length ? 'info' : 'success'
+      );
+    }
+
+    async function deleteAsset(type, name) {
+      showStatus(`Sterg fisierul ${name} de pe server...`, 'info');
+      const data = await fetchJson(`${API_URL}?action=delete_asset&type=${encodeURIComponent(type)}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type, name })
+      });
+      renderServerAssets(type, data.items || []);
+      showStatus(`Fisierul ${name} a fost sters de pe server.`, 'success');
+    }
+
+    async function saveAllConfig() {
+      const themeConfig = buildThemeObject();
+      const questionTypeConfig = buildQuestionTypeObject();
+      showStatus('Salvez configuratia in fisierele proiectului...', 'info');
+      await fetchJson(`${API_URL}?action=save_all`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(buildSavePayload())
+      });
+      themeCatalogState = themeCatalogState.filter((item) => item.id !== themeConfig.id);
+      themeCatalogState.push(themeConfig);
+      questionTypeCatalogState = questionTypeCatalogState.filter((item) => item.id !== questionTypeConfig.id);
+      questionTypeCatalogState.push(questionTypeConfig);
+      layoutRegistryState = layoutRegistryState.filter((item) => item.id !== questionTypeConfig.settings?.layoutId && item.id !== buildLayoutObject().layout.id);
+      layoutRegistryState.push(buildLayoutObject().layout);
+      renderAll();
+      showStatus('Configuratia a fost salvata direct in proiect.', 'success');
+    }
+
+    function resetWizard() {
+      location.reload();
+    }
+
+    function clearLocalLibraries() {
+      localStorage.removeItem(GRADIENT_LIBRARY_KEY);
+      localStorage.removeItem(COLOR_LIBRARY_KEY);
+    }
+
+    function resetDynamicCollections() {
+      byId('label-items').innerHTML = '';
+      byId('theme-image-library').innerHTML = '';
+      byId('audio-library').innerHTML = '';
+      byId('custom-block-library').innerHTML = '';
+      byId('manual-image-library').innerHTML = '';
+      byId('manual-audio-library').innerHTML = '';
+      byId('server-image-library').innerHTML = '';
+      byId('server-audio-library').innerHTML = '';
+    }
+
+    function seedDefaultRows() {
+      addTemplateItem('label-row-template', 'label-items', (root) => {
+        root.querySelector('.lang-code').value = 'ro';
+        root.querySelector('.lang-value').value = 'Quiz clasic cu imagine sus';
+      });
+
+      addTemplateItem('label-row-template', 'label-items', (root) => {
+        root.querySelector('.lang-code').value = 'en';
+        root.querySelector('.lang-value').value = 'Classic top image quiz';
+      });
+    }
+
+    function resetLocalBuilder() {
+      document.querySelectorAll('input, select, textarea').forEach((field) => {
+        if (field.type === 'checkbox' || field.type === 'radio') {
+          field.checked = field.defaultChecked;
+        } else if (field.tagName === 'SELECT') {
+          field.selectedIndex = 0;
+          const defaultOption = Array.from(field.options).find((option) => option.defaultSelected);
+          if (defaultOption) {
+            field.value = defaultOption.value;
+          }
+        } else if (!['hidden', 'file'].includes(field.type)) {
+          field.value = field.defaultValue;
+        } else if (field.type === 'file') {
+          field.value = '';
+        }
+      });
+
+      resetDynamicCollections();
+      seedDefaultRows();
+      applyStructurePreset('media_quote');
+      syncAutoGeneratedIds();
+      renderAll();
+      Promise.allSettled([loadAssetLibrary('image'), loadAssetLibrary('audio')]);
+      showStatus('Builderul local a fost resetat.', 'success');
+    }
+
+    async function clearUploadsOnServer() {
+      showStatus('Sterg toate fisierele uploadate de pe server...', 'info');
+      const data = await fetchJson(`${API_URL}?action=clear_uploads`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({})
+      });
+      await Promise.allSettled([loadAssetLibrary('image'), loadAssetLibrary('audio')]);
+      showStatus(`${data.message} Total sters: ${data.deletedCount || 0}`, 'success');
+    }
+
+    async function resetBuilderCompletely() {
+      clearLocalLibraries();
+      resetLocalBuilder();
+      showStatus('Datele locale ale builderului au fost sterse complet. Daca vrei si fisierele de pe server, apasa Curata uploads.', 'success');
+    }
+
+    function bindInputsWithin(root) {
+      root.querySelectorAll('input, select, textarea').forEach((field) => {
+        field.addEventListener('input', renderAll);
+        field.addEventListener('change', renderAll);
+      });
+    }
+
+    function bindLiveInputs() {
+      bindInputsWithin(document);
+    }
+
+    function setActiveTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach((button) => {
+        button.classList.toggle('active', button.dataset.tab === tabId);
+      });
+      document.querySelectorAll('[data-tab-pane]').forEach((pane) => {
+        pane.classList.toggle('active', pane.dataset.tabPane === tabId);
+      });
+    }
+
+    function mergeQuizBuilderPanels() {
+      const layoutButton = document.querySelector('.tab-btn[data-tab="layout"]');
+      const quizButton = document.querySelector('.tab-btn[data-tab="question"]');
+      const layoutPane = document.querySelector('[data-tab-pane="layout"]');
+      const quizPane = document.querySelector('[data-tab-pane="question"]');
+
+      if (!layoutPane || !quizPane || quizPane.dataset.merged === 'yes') {
+        return;
+      }
+
+      if (layoutButton) {
+        layoutButton.style.display = 'none';
+      }
+      if (quizButton) {
+        quizButton.textContent = 'Quizz';
+      }
+
+      const fragment = document.createDocumentFragment();
+      Array.from(layoutPane.children).forEach((child) => fragment.appendChild(child));
+      const firstSectionDivider = quizPane.querySelector('.section-divider');
+      if (firstSectionDivider) {
+        quizPane.insertBefore(fragment, firstSectionDivider.nextSibling);
+      } else {
+        quizPane.insertBefore(fragment, quizPane.firstChild);
+      }
+      layoutPane.remove();
+      quizPane.dataset.merged = 'yes';
+
+      const quizNewStep = Array.from(quizPane.querySelectorAll(':scope > .step'))
+        .find((step) => step.querySelector('h2')?.textContent.trim() === 'Quizz Nou');
+      const bonusStep = Array.from(quizPane.querySelectorAll(':scope > .step'))
+        .find((step) => step.querySelector('h2')?.textContent.trim() === 'Bonus, Timp si Sunete');
+
+      if (quizNewStep && bonusStep) {
+        quizPane.insertBefore(quizNewStep, bonusStep);
+      }
+
+      const desiredOrder = [
+        'quiz-cards-step',
+        'quiz-main-step',
+        'layout-identity-step',
+        'layout-structure-step',
+        'layout-custom-step',
+        'layout-answers-step',
+      ];
+
+      desiredOrder.forEach((stepId) => {
+        const stepElement = byId(stepId);
+        if (stepElement) {
+          quizPane.appendChild(stepElement);
+        }
+      });
+    }
+
+    byId('add-label').addEventListener('click', () => {
+      addTemplateItem('label-row-template', 'label-items');
+      renderAll();
+    });
+
+    byId('add-theme-image').addEventListener('click', () => {
+      addTemplateItem('theme-image-template', 'theme-image-library');
+      renderAll();
+    });
+
+    byId('add-audio-item').addEventListener('click', () => {
+      addTemplateItem('audio-item-template', 'audio-library');
+      renderAll();
+    });
+    byId('add-custom-block').addEventListener('click', () => {
+      addTemplateItem('custom-block-template', 'custom-block-library');
+      renderAll();
+    });
+    byId('start-structure-builder').addEventListener('click', enterStructureBuilderMode);
+    byId('open-media-library-manager').addEventListener('click', () => openAssetPicker('media-library', null, 'image'));
+    byId('ensure-upload-dirs-top').addEventListener('click', async () => {
+      try {
+        await ensureUploadDirectories();
+      } catch (error) {
+        showStatus(error.message, 'error');
+      }
+    });
+    byId('refresh-all-assets').addEventListener('click', async () => {
+      try {
+        await Promise.allSettled([loadAssetLibrary('image'), loadAssetLibrary('audio')]);
+        showStatus('Biblioteca media a fost actualizata.', 'success');
+      } catch (error) {
+        showStatus(error.message, 'error');
+      }
+    });
+    byId('refresh-theme-cards').addEventListener('click', async () => {
+      try {
+        await loadBuilderCatalogs();
+        renderAll();
+        showStatus('Lista de teme a fost actualizata.', 'success');
+      } catch (error) {
+        showStatus(error.message, 'error');
+      }
+    });
+    byId('refresh-layout-cards').addEventListener('click', async () => {
+      try {
+        await loadBuilderCatalogs();
+        renderAll();
+        showStatus('Lista de layouturi a fost actualizata.', 'success');
+      } catch (error) {
+        showStatus(error.message, 'error');
+      }
+    });
+    byId('refresh-question-cards').addEventListener('click', async () => {
+      try {
+        await loadBuilderCatalogs();
+        renderAll();
+        showStatus('Lista de quizzuri a fost actualizata.', 'success');
+      } catch (error) {
+        showStatus(error.message, 'error');
+      }
+    });
+    byId('apify-scan-button').addEventListener('click', async () => {
+      try {
+        await scanApifyLibrary();
+      } catch (error) {
+        showStatus(error.message, 'error');
+      }
+    });
+    byId('pick-theme-bg').addEventListener('click', () => openAssetPicker('theme-bg'));
+    byId('pick-theme-library-image').addEventListener('click', () => openAssetPicker('theme-image'));
+    byId('pick-question-icon').addEventListener('click', () => openAssetPicker('question-icon'));
+    byId('pick-audio-library').addEventListener('click', () => openAssetPicker('audio-library'));
+    byId('layout-id').addEventListener('input', syncQuestionTypeBindingFromLayout);
+    byId('slide-type').addEventListener('change', () => {
+      syncQuestionTypeBindingFromLayout();
+      syncAutoGeneratedIds();
+      renderLayoutCards();
+      renderQuestionLayoutOptions();
+      renderQuestionCards();
+      renderAll();
+    });
+    byId('pick-gradient').addEventListener('click', openGradientPopup);
+    byId('popup-type-image').addEventListener('click', () => setAssetPickerType('image'));
+    byId('popup-type-audio').addEventListener('click', () => setAssetPickerType('audio'));
+    byId('close-asset-picker').addEventListener('click', () => closePopup('asset-picker-popup'));
+    byId('close-gradient-popup').addEventListener('click', () => closePopup('gradient-popup'));
+    byId('close-color-popup').addEventListener('click', () => closePopup('color-popup'));
+    byId('popup-upload-button').addEventListener('click', async () => {
+      try {
+        await uploadAssetsFromPopup();
+      } catch (error) {
+        showStatus(error.message, 'error');
+      }
+    });
+    ['dragenter', 'dragover'].forEach((eventName) => {
+      byId('popup-dropzone').addEventListener(eventName, (event) => {
+        event.preventDefault();
+        byId('popup-dropzone').classList.add('dragover');
+      });
+    });
+    ['dragleave', 'drop'].forEach((eventName) => {
+      byId('popup-dropzone').addEventListener(eventName, (event) => {
+        event.preventDefault();
+        byId('popup-dropzone').classList.remove('dragover');
+      });
+    });
+    byId('popup-dropzone').addEventListener('drop', (event) => {
+      const files = event.dataTransfer?.files;
+      if (files && files.length) {
+        byId('popup-upload-files').files = files;
+      }
+    });
+    byId('popup-save-link').addEventListener('click', saveExternalLinkFromPopup);
+    byId('popup-upload-files').addEventListener('change', () => {
+      const count = byId('popup-upload-files').files?.length || 0;
+      byId('popup-dropzone-meta').textContent = count
+        ? `${count} fisier(e) pregatite pentru upload.`
+        : (assetPickerType === 'audio'
+          ? 'Apasa aici sau trage fisierul audio in aceasta zona.'
+          : 'Apasa aici sau trage imaginea in aceasta zona.');
+    });
+    byId('gradient-angle').addEventListener('input', renderGradientPreview);
+    byId('gradient-color-1').addEventListener('input', renderGradientPreview);
+    byId('gradient-color-2').addEventListener('input', renderGradientPreview);
+    byId('apply-gradient').addEventListener('click', () => {
+      byId('theme-overlay').value = getGradientCss();
+      renderAll();
+      closePopup('gradient-popup');
+      showStatus('Gradientul a fost aplicat la overlay.', 'success');
+    });
+    byId('save-gradient').addEventListener('click', () => {
+      const items = getGradientLibrary();
+      items.push({ name: byId('gradient-name').value.trim() || 'Gradient nou', css: getGradientCss() });
+      saveGradientLibrary(items);
+      renderGradientLibrary();
+      showStatus('Gradientul a fost salvat in biblioteca.', 'success');
+    });
+    byId('apply-popup-color').addEventListener('click', () => {
+      if (colorPickerTarget) {
+        byId(colorPickerTarget).value = byId('color-popup-value').value;
+        renderAll();
+      }
+      closePopup('color-popup');
+      showStatus('Culoarea a fost aplicata.', 'success');
+    });
+    byId('save-popup-color').addEventListener('click', () => {
+      const items = getColorLibrary();
+      items.push({ name: byId('color-popup-name').value.trim() || 'Culoare noua', value: byId('color-popup-value').value });
+      saveColorLibrary(items);
+      renderColorLibrary();
+      showStatus('Culoarea a fost salvata in paleta.', 'success');
+    });
+
+    byId('generate-all').addEventListener('click', renderAll);
+    byId('add-quick-image').addEventListener('click', () => {
+      const url = byId('quick-image-url').value.trim();
+      if (!url) {
+        showStatus('Completeaza linkul imaginii inainte sa o adaugi.', 'error');
+        return;
+      }
+      addThemeImageRow({
+        id: byId('quick-image-id').value.trim() || safeId(byId('quick-image-name').value || url),
+        name: byId('quick-image-name').value.trim() || 'Imagine externa',
+        url
+      });
+      byId('quick-image-id').value = '';
+      byId('quick-image-name').value = '';
+      byId('quick-image-url').value = '';
+      showStatus('Imaginea din link a fost adaugata in biblioteca.', 'success');
+    });
+    byId('add-quick-audio').addEventListener('click', () => {
+      const url = byId('quick-audio-url').value.trim();
+      if (!url) {
+        showStatus('Completeaza linkul audio inainte sa il adaugi.', 'error');
+        return;
+      }
+      addAudioRow({
+        id: byId('quick-audio-id').value.trim() || safeId(byId('quick-audio-name').value || url),
+        name: byId('quick-audio-name').value.trim() || 'Audio extern',
+        category: byId('quick-audio-category').value,
+        url
+      });
+      byId('quick-audio-id').value = '';
+      byId('quick-audio-name').value = '';
+      byId('quick-audio-url').value = '';
+      showStatus('Audio din link a fost adaugat in biblioteca.', 'success');
+    });
+    byId('save-all').addEventListener('click', async () => {
+      try {
+        await saveAllConfig();
+      } catch (error) {
+        showStatus(error.message, 'error');
+      }
+    });
+    byId('reset-local').addEventListener('click', resetLocalBuilder);
+    byId('reset-builder-all').addEventListener('click', async () => {
+      await resetBuilderCompletely();
+    });
+    byId('clear-uploads').addEventListener('click', async () => {
+      try {
+        await clearUploadsOnServer();
+      } catch (error) {
+        showStatus(error.message, 'error');
+      }
+    });
+    byId('reset-demo').addEventListener('click', resetWizard);
+    byId('ensure-upload-dirs').addEventListener('click', async () => {
+      try {
+        await ensureUploadDirectories();
+      } catch (error) {
+        showStatus(error.message, 'error');
+      }
+    });
+    byId('upload-theme-images').addEventListener('click', async () => {
+      try {
+        await uploadAssets('image');
+      } catch (error) {
+        showStatus(error.message, 'error');
+      }
+    });
+    byId('upload-audio-files').addEventListener('click', async () => {
+      try {
+        await uploadAssets('audio');
+      } catch (error) {
+        showStatus(error.message, 'error');
+      }
+    });
+    byId('refresh-theme-assets').addEventListener('click', async () => {
+      try {
+        await loadAssetLibrary('image');
+        showStatus('Biblioteca de imagini de pe server a fost actualizata.', 'success');
+      } catch (error) {
+        showStatus(error.message, 'error');
+      }
+    });
+    byId('refresh-audio-assets').addEventListener('click', async () => {
+      try {
+        await loadAssetLibrary('audio');
+        showStatus('Biblioteca audio de pe server a fost actualizata.', 'success');
+      } catch (error) {
+        showStatus(error.message, 'error');
+      }
+    });
+    byId('question-type-name').addEventListener('input', syncAutoGeneratedIds);
+    byId('question-type-slide-type').addEventListener('change', () => {
+      applyQuizBuilderMode();
+      renderQuestionLayoutOptions();
+      renderLayoutCards();
+      renderQuestionCards();
+      renderAll();
+    });
+    byId('question-type-layout-select')?.addEventListener('change', () => {
+      byId('question-type-layout-id').value = byId('question-type-layout-select').value || '';
+      updateQuestionBindingPreview();
+      renderAll();
+    });
+    byId('quiz-theme-select')?.addEventListener('change', () => {
+      updateQuestionBindingPreview();
+      renderAll();
+    });
+
+    document.querySelectorAll('[data-copy]').forEach((button) => {
+      button.addEventListener('click', () => copyOutput(button.dataset.copy));
+    });
+
+    document.querySelectorAll('[data-download]').forEach((button) => {
+      button.addEventListener('click', () => downloadOutput(button.dataset.download, button.dataset.file));
+    });
+
+    document.querySelectorAll('.tab-btn').forEach((button) => {
+      button.addEventListener('click', () => setActiveTab(button.dataset.tab));
+    });
+    document.querySelectorAll('.pick-color-btn').forEach((button) => {
+      button.addEventListener('click', () => openColorPopup(button.dataset.target));
+    });
+
+    document.addEventListener('click', async (event) => {
+      const rowImageButton = event.target.closest('.pick-row-image-btn');
+      if (rowImageButton) {
+        openAssetPicker('theme-image-row', rowImageButton);
+        return;
+      }
+
+      const rowAudioButton = event.target.closest('.pick-row-audio-btn');
+      if (rowAudioButton) {
+        openAssetPicker('audio-row', rowAudioButton);
+        return;
+      }
+
+      const presetCard = event.target.closest('[data-structure-preset]');
+      if (presetCard) {
+        applyStructurePreset(presetCard.dataset.structurePreset);
+        return;
+      }
+
+      const button = event.target.closest('[data-action]');
+      if (!button) {
+        return;
+      }
+
+      const action = button.dataset.action;
+      if (action === 'use-bg') {
+        byId('theme-bg-url').value = button.dataset.url || '';
+        renderAll();
+        showStatus('Imaginea a fost setata ca background pentru theme.', 'success');
+      }
+
+      if (action === 'add-image-row') {
+        addThemeImageRow({
+          id: button.dataset.id || safeId(button.dataset.name || ''),
+          name: button.dataset.name || '',
+          url: button.dataset.url || ''
+        });
+        showStatus('Imaginea a fost adaugata in biblioteca theme din formular.', 'success');
+      }
+
+      if (action === 'add-audio-row') {
+        addAudioRow({
+          id: button.dataset.id || safeId(button.dataset.name || ''),
+          name: button.dataset.name || '',
+          url: button.dataset.url || '',
+          category: 'music'
+        });
+        showStatus('Sunetul a fost adaugat in biblioteca audio din formular.', 'success');
+      }
+
+      if (action === 'delete-asset') {
+        try {
+          await deleteAsset(button.dataset.type || '', button.dataset.name || '');
+        } catch (error) {
+          showStatus(error.message, 'error');
+        }
+      }
+
+      if (action === 'select-asset') {
+        applyPickedAsset(button.dataset.mode || '', {
+          id: button.dataset.id || '',
+          name: button.dataset.name || '',
+          url: button.dataset.url || ''
+        });
+      }
+
+      if (action === 'remove-manual-image') {
+        removeManualLibraryItem('image', button.dataset.id || '', button.dataset.url || '');
+        renderAll();
+        showStatus('Imaginea a fost stearsa din builder.', 'success');
+      }
+
+      if (action === 'remove-manual-audio') {
+        removeManualLibraryItem('audio', button.dataset.id || '', button.dataset.url || '');
+        renderAll();
+        showStatus('Audio a fost sters din builder.', 'success');
+      }
+
+      if (action === 'add-theme-card') {
+        byId('theme-id').value = '';
+        byId('theme-name').value = '';
+        byId('theme-description').value = '';
+        byId('theme-bg-url').value = '';
+        byId('theme-overlay').value = '';
+        byId('theme-image-library').innerHTML = '';
+        setActiveTab('theme');
+        renderAll();
+      }
+
+      if (action === 'edit-theme-card') {
+        const theme = themeCatalogState.find((item) => item.id === button.dataset.id);
+        if (theme) {
+          populateThemeForm(theme);
+          setActiveTab('theme');
+          showStatus(`Tema ${theme.name || theme.id} a fost incarcata pentru editare.`, 'success');
+        }
+      }
+
+      if (action === 'delete-theme-card') {
+        try {
+          const data = await deleteConfigEntity('delete_theme', button.dataset.id || '');
+          await loadBuilderCatalogs();
+          renderAll();
+          showStatus(data.message || 'Tema a fost stearsa din proiect.', 'success');
+        } catch (error) {
+          showStatus(error.message, 'error');
+        }
+      }
+
+      if (action === 'add-layout-card') {
+        byId('layout-id').value = '';
+        byId('structure-preset-id').value = '';
+        byId('label-items').innerHTML = '';
+        setCheckedValues('#structure-checks', []);
+        setCheckedValues('#supports-checks', []);
+        setActiveTab('layout');
+        syncAutoGeneratedIds();
+        renderAll();
+      }
+
+      if (action === 'edit-layout-card') {
+        populateLayoutFormFromRegistry(button.dataset.id || '');
+        setActiveTab('layout');
+        renderAll();
+        showStatus('Layoutul a fost incarcat pentru editare.', 'success');
+      }
+
+      if (action === 'delete-layout-card') {
+        try {
+          const data = await deleteConfigEntity('delete_layout', button.dataset.id || '');
+          await loadBuilderCatalogs();
+          renderAll();
+          showStatus(data.message || 'Layoutul a fost sters din proiect.', 'success');
+        } catch (error) {
+          showStatus(error.message, 'error');
+        }
+      }
+
+      if (action === 'add-question-card') {
+        const cardsStep = byId('quiz-cards-step');
+        if (cardsStep) cardsStep.style.display = '';
+        byId('question-type-id').value = '';
+        byId('question-type-name').value = '';
+        byId('question-type-icon').value = '';
+        byId('question-type-desc').value = '';
+        byId('quiz-language').value = 'ro';
+        byId('audio-library').innerHTML = '';
+        setActiveTab('question');
+        applyQuizBuilderMode();
+        syncAutoGeneratedIds();
+        renderAll();
+      }
+
+      if (action === 'edit-question-card') {
+        const questionTypeItem = questionTypeCatalogState.find((item) => item.id === button.dataset.id);
+        if (questionTypeItem) {
+          populateQuestionTypeForm(questionTypeItem);
+          if (questionTypeItem.settings?.layoutId) {
+            populateLayoutFormFromRegistry(questionTypeItem.settings.layoutId);
+          }
+          setActiveTab('question');
+          renderAll();
+          showStatus(`Quizul ${questionTypeItem.name || questionTypeItem.id} a fost incarcat pentru editare.`, 'success');
+        }
+      }
+
+      if (action === 'delete-question-card') {
+        try {
+          const data = await deleteConfigEntity('delete_question_type', button.dataset.id || '');
+          await loadBuilderCatalogs();
+          renderAll();
+          showStatus(data.message || 'Quizzul a fost sters din proiect.', 'success');
+        } catch (error) {
+          showStatus(error.message, 'error');
+        }
+      }
+
+      if (action === 'use-gradient') {
+        byId('theme-overlay').value = button.dataset.css || '';
+        renderAll();
+        closePopup('gradient-popup');
+        showStatus('Gradientul a fost aplicat.', 'success');
+      }
+
+      if (action === 'delete-gradient') {
+        const items = getGradientLibrary();
+        items.splice(Number(button.dataset.index || -1), 1);
+        saveGradientLibrary(items);
+        renderGradientLibrary();
+        showStatus('Gradientul a fost sters din biblioteca.', 'success');
+      }
+
+      if (action === 'use-popup-color') {
+        if (colorPickerTarget) {
+          byId(colorPickerTarget).value = button.dataset.value || '#2e85c7';
+          renderAll();
+        }
+        closePopup('color-popup');
+        showStatus('Culoarea a fost aplicata din paleta.', 'success');
+      }
+
+      if (action === 'delete-popup-color') {
+        const items = getColorLibrary();
+        items.splice(Number(button.dataset.index || -1), 1);
+        saveColorLibrary(items);
+        renderColorLibrary();
+        showStatus('Culoarea a fost stearsa din paleta.', 'success');
+      }
+    });
+
+    bindLiveInputs();
+    resetDynamicCollections();
+    seedDefaultRows();
+    applyStructurePreset('media_quote');
+    applyQuizBuilderMode();
+    syncAutoGeneratedIds();
+    Promise.allSettled([loadAssetLibrary('image'), loadAssetLibrary('audio'), loadBuilderCatalogs()]).finally(() => {
+      renderGradientLibrary();
+      renderColorLibrary();
+      renderAll();
+    });
+  </script>
+</body>
+</html>
